@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>B2H Ultra Ω3 — 360° Viewer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #ffffff; overflow: hidden; }
+    canvas { display: block; }
+    #hint {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      font-size: 12px; color: #bbb; letter-spacing: 0.06em; pointer-events: none;
+      display: none;
+    }
+    #loading {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; background: #fff;
+      font-family: -apple-system, sans-serif; gap: 16px;
+    }
+    #bar-wrap { width: 200px; height: 3px; background: #eee; border-radius: 2px; }
+    #bar { height: 100%; width: 0%; background: #c8a96e; border-radius: 2px; transition: width 0.2s; }
+    #pct { font-size: 12px; color: #bbb; }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div id="bar-wrap"><div id="bar"></div></div>
+    <div id="pct">Loading…</div>
+  </div>
+  <div id="hint">Drag to rotate · Scroll to zoom</div>
+
+  <script type="importmap">
+  { "imports": {
+      "three": "https://unpkg.com/three@0.164.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.164.0/examples/jsm/"
+  }}
+  </script>
+
+  <script type="module">
+    import * as THREE        from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+    document.body.appendChild(renderer.domElement);
+
+    const scene  = new THREE.Scene();
+    scene.background = new THREE.Color(0xffffff);
+    const camera = new THREE.PerspectiveCamera(36, innerWidth / innerHeight, 0.001, 1000);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping   = true;
+    controls.dampingFactor   = 0.07;
+    controls.autoRotate      = true;
+    controls.autoRotateSpeed = 1.5;
+    controls.minPolarAngle   = Math.PI * 0.18;
+    controls.maxPolarAngle   = Math.PI * 0.75;
+    renderer.domElement.addEventListener('pointerdown', () => controls.autoRotate = false);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.8));
+    const key = new THREE.DirectionalLight(0xfff8f2, 1.2);
+    key.position.set(2, 4, 3);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xf0f4ff, 0.7);
+    fill.position.set(-3, 2, -2);
+    scene.add(fill);
+    const back = new THREE.DirectionalLight(0xffffff, 0.3);
+    back.position.set(0, 1, -4);
+    scene.add(back);
+
+    // Label texture — CylinderGeometry has perfect built-in UV wrapping
+    const labelTex = new THREE.TextureLoader().load('label.png');
+    labelTex.colorSpace = THREE.SRGBColorSpace;
+    labelTex.anisotropy = 16;
+
+    new GLTFLoader().load(
+      'omega3_final.glb',
+      (gltf) => {
+        const model = gltf.scene;
+
+        // Centre and measure bottle
+        const box    = new THREE.Box3().setFromObject(model);
+        const centre = box.getCenter(new THREE.Vector3());
+        const size   = box.getSize(new THREE.Vector3());
+        model.position.sub(centre);
+
+        // Fit camera
+        const maxDim = Math.max(size.x, size.y, size.z);
+        camera.position.set(0, 0, maxDim * 1.9);
+        controls.target.set(0, 0, 0);
+        controls.minDistance = maxDim * 0.7;
+        controls.maxDistance = maxDim * 6;
+        controls.update();
+
+        // Plain white bottle — label cylinder sits on top
+        model.traverse(child => {
+          if (!child.isMesh) return;
+          child.material = new THREE.MeshStandardMaterial({
+            color: 0xf2f0ec,
+            roughness: 0.45,
+            metalness: 0.0,
+          });
+        });
+        scene.add(model);
+
+        // World bounding box after centring
+        const wb   = new THREE.Box3().setFromObject(model);
+        const wSize = wb.getSize(new THREE.Vector3());
+
+        // Label band: tune these two numbers to reposition the label
+        const yMin   = wb.min.y + wSize.y * 0.07;  // bottom of label
+        const yMax   = wb.min.y + wSize.y * 0.70;  // top of label
+        const lHeight = yMax - yMin;
+        const lCenterY = (yMin + yMax) / 2;
+
+        // Radius: enough clearance to avoid z-fighting with the bottle surface
+        const radius = Math.max(wSize.x, wSize.z) / 2 * 1.018;
+
+        // Open-ended cylinder — Three.js UV: u wraps 0→1 around circumference,
+        // v goes 1 at top → 0 at bottom (so flipY=true makes label right-side up)
+        const geo = new THREE.CylinderGeometry(radius, radius, lHeight, 128, 1, true);
+        const mat = new THREE.MeshStandardMaterial({
+          map:       labelTex,
+          roughness: 0.3,
+          metalness: 0.0,
+          side:      THREE.FrontSide,
+        });
+        const labelCyl = new THREE.Mesh(geo, mat);
+        labelCyl.position.y = lCenterY;
+        labelCyl.rotation.y  = Math.PI / 2;   // put seam at back, away from camera
+        scene.add(labelCyl);
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('hint').style.display    = 'block';
+      },
+      (xhr) => {
+        if (xhr.total) {
+          const p = Math.round(xhr.loaded / xhr.total * 100);
+          document.getElementById('bar').style.width = p + '%';
+          document.getElementById('pct').textContent = 'Loading… ' + p + '%';
+        }
+      },
+      (err) => {
+        console.error(err);
+        document.getElementById('pct').textContent = 'Error — check console';
+      }
+    );
+
+    window.addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    (function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    })();
+  </script>
+</body>
+</html>
