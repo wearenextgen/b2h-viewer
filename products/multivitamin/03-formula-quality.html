@@ -14,12 +14,12 @@
 </section>
 
 <style>
-#b2h-multivitamin-quality{--gold:#f0cf73;--blue:#dceef1;--brown:#775b3f;--caramel:#c38d3d;--ink:#171513;--white:#fff;--edge:clamp(14px,3vw,42px);--max:1650px;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff;position:relative;isolation:isolate}
+#b2h-multivitamin-quality{--gold:#a9deda;--blue:#e7f7f5;--brown:#176f6b;--caramel:#24aba5;--ink:#142b2a;--white:#fff;--shadow:rgba(23,111,107,.14);--shadow-soft:rgba(23,111,107,.08);--shadow-strong:rgba(18,83,80,.20);--border:rgba(23,111,107,.22);--edge:clamp(14px,3vw,42px);--max:1650px;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff;position:relative;isolation:isolate}
 #b2h-multivitamin-quality,#b2h-multivitamin-quality *{box-sizing:border-box}
 #b2h-multivitamin-quality button{font:inherit}
 #b2h-multivitamin-quality .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 #b2h-multivitamin-quality .shell{width:min(calc(100% - (var(--edge)*2)),var(--max));margin:auto}
-#b2h-multivitamin-quality .soft{background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 78%,white),color-mix(in srgb,var(--blue) 82%,white));box-shadow:0 22px 60px rgba(117,92,73,.13)}
+#b2h-multivitamin-quality .soft{background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 78%,white),color-mix(in srgb,var(--blue) 82%,white));box-shadow:0 22px 60px var(--shadow)}
 #b2h-multivitamin-quality .checker:nth-child(4n+1),#b2h-multivitamin-quality .checker:nth-child(4n+4){background:linear-gradient(145deg,var(--brown),color-mix(in srgb,var(--brown) 72%,var(--caramel)));color:white}
 #b2h-multivitamin-quality .checker:nth-child(4n+2),#b2h-multivitamin-quality .checker:nth-child(4n+3){background:linear-gradient(145deg,color-mix(in srgb,var(--blue) 82%,white),color-mix(in srgb,var(--gold) 76%,white));color:var(--brown)}
 #b2h-multivitamin-quality svg{width:1.8em;height:1.8em;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
@@ -31,7 +31,7 @@
 #b2h-multivitamin-quality{padding:clamp(26px,5vw,76px) 0}
 #b2h-multivitamin-quality .quality-intro{display:flex;flex-direction:column;gap:.6rem;margin:0 0 clamp(18px,3vw,34px);font-size:clamp(1.35rem,2.5vw,2.45rem);font-weight:850;color:var(--brown);max-width:28ch;line-height:1.1}
 #b2h-multivitamin-quality .quality-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(14px,2vw,24px)}
-#b2h-multivitamin-quality .quality{border-radius:clamp(22px,3vw,40px);min-height:270px;padding:clamp(25px,4vw,48px);display:flex;flex-direction:column;justify-content:center;box-shadow:0 18px 44px rgba(77,59,46,.12);transition:transform .3s}
+#b2h-multivitamin-quality .quality{border-radius:clamp(22px,3vw,40px);min-height:270px;padding:clamp(25px,4vw,48px);display:flex;flex-direction:column;justify-content:center;box-shadow:0 18px 44px var(--shadow);transition:transform .3s}
 #b2h-multivitamin-quality .quality:hover{transform:translateY(-6px)}
 #b2h-multivitamin-quality .quality span{font-size:1.6rem}
 #b2h-multivitamin-quality .quality h3{font-size:clamp(1.2rem,2vw,1.85rem);margin:1rem 0 .6rem;text-transform:uppercase}
@@ -53,7 +53,7 @@
 (() => {
   const root=document.getElementById('b2h-multivitamin-quality');if(!root||root.dataset.ready)return;root.dataset.ready='true';
   const IMAGE_URL=''; // Optional public formula/packaging image URL.
-  const band=root.querySelector('.image-band');if(IMAGE_URL){band.style.backgroundImage=`linear-gradient(rgba(20,18,17,.08),rgba(20,18,17,.35)),url("${IMAGE_URL}")`;band.querySelector('span').hidden=true;}
+  const band=root.querySelector('.image-band');if(IMAGE_URL){band.style.backgroundImage=`linear-gradient(color-mix(in srgb,var(--ink) 8%,transparent),color-mix(in srgb,var(--ink) 35%,transparent)),url("${IMAGE_URL}")`;band.querySelector('span').hidden=true;}
   const copy=root.querySelector('.audience-copy');root.querySelectorAll('.audience').forEach(button=>button.addEventListener('click',()=>{root.querySelectorAll('.audience').forEach(item=>item.classList.remove('is-active'));button.classList.add('is-active');copy.textContent=button.dataset.copy;}));
 })();
 </script>
