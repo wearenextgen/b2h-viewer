@@ -32,7 +32,6 @@ Required content:
 - Product differentiators
 - One or two supporting images
 - A small interactive comparison, reveal, or ingredient detail
-- The reusable 3D product viewer as the main visual component
 - No standalone section title
 
 ## Section 03 - Quality and Formulation
@@ -63,6 +62,8 @@ Required content:
 - Number of servings or duration when supplied
 - Warnings and storage instructions when supplied
 - Simple interactive routine, step sequence, or dosage control
+- Shared 3D bottle viewer with the product-specific label texture
+- Four rounded supporting-image cards around the bottle
 - No standalone section title
 
 Dosage must come from approved website copy or the final product label.

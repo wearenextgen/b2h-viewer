@@ -15,9 +15,9 @@ The source is `source-material/B2H-υλικο-για-εντυπα-b2c.docx`.
 | Section | Source information included |
 | --- | --- |
 | `01-benefits.html` | Product positioning, six approved benefit points, selectable facts, concise source introduction, product tagline, and product-specific visual overlays |
-| `02-why-choose.html` | Full approved narrative paragraphs, formula rationale, complete ingredient categories, interactive ingredient explanations, and the 3D model slot |
+| `02-why-choose.html` | Full approved narrative paragraphs, formula rationale, complete ingredient categories, and interactive ingredient explanations |
 | `03-formula-quality.html` | Formula and quality facts, package statistics, complete intended-audience list, interactive audience selector, and supporting-image slot |
-| `04-how-to-use.html` | Exact supplied usage guidance, timing, daily-routine interaction, closing marketing copy, EFSA conditions where supplied, and full supplement disclaimer |
+| `04-how-to-use.html` | Exact supplied usage guidance, timing, daily-routine interaction, shared 3D bottle with product-specific label, four rounded image slots, closing marketing copy, EFSA conditions where supplied, and full supplement disclaimer |
 
 ## Verification Results
 
@@ -27,7 +27,7 @@ The source is `source-material/B2H-υλικο-για-εντυπα-b2c.docx`.
 - All 12 files passed structural HTML checks
 - All inline JavaScript passed syntax checks
 - Every benefits file contains exactly six image-card slots
-- Every Section 02 file contains one responsive 3D viewer
+- Every Section 04 file contains one responsive 3D bottle viewer
 - No section contains a visible standalone section title
 
 ## Omega-3 Notes

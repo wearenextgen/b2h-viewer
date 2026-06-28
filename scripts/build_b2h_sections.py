@@ -9,6 +9,13 @@ OUTPUT = ROOT / "products"
 PRODUCTS = {
     "omega-3": {
         "name": "B2H Omega-3",
+        "label_url": "https://wearenextgen.github.io/b2h-viewer/assets/labels/omega-3.png",
+        "usage_images": [
+            "https://wearenextgen.github.io/b2h-viewer/img/card-brain.jpg",
+            "https://wearenextgen.github.io/b2h-viewer/img/heart-glass.jpg",
+            "https://wearenextgen.github.io/b2h-viewer/img/eye-photo.jpg",
+            "https://wearenextgen.github.io/b2h-viewer/img/card-triglycerides.jpg",
+        ],
         "tagline": "Η καθημερινή δύναμη της καρδιάς, του εγκεφάλου και της όρασης.",
         "benefit_intro": "Τα Ωμέγα-3 λιπαρά οξέα αποτελούν έναν από τους σημαντικότερους συμμάχους της καθημερινής υγείας.",
         "micro_tagline": "Η καθημερινή φροντίδα που αξίζει ο οργανισμός σας.",
@@ -92,6 +99,8 @@ PRODUCTS = {
     },
     "multivitamin": {
         "name": "B2H Multivitamin Complex",
+        "label_url": "https://wearenextgen.github.io/b2h-viewer/assets/labels/multivitamin.png",
+        "usage_images": ["", "", "", ""],
         "tagline": "Η καθημερινή βάση της υγείας σας.",
         "benefit_intro": "Μία ταμπλέτα. Δεκάδες πολύτιμα μικροθρεπτικά συστατικά. Κάθε ημέρα.",
         "micro_tagline": "Η δύναμη της κάθε ημέρας ξεκινά από μέσα.",
@@ -169,6 +178,8 @@ PRODUCTS = {
     },
     "magnesium": {
         "name": "B2H Magnesium Ultra Complex",
+        "label_url": "https://wearenextgen.github.io/b2h-viewer/assets/labels/magnesium.png",
+        "usage_images": ["", "", "", ""],
         "tagline": "Η καθημερινή ισορροπία που χρειάζεται το σώμα και το μυαλό σας.",
         "benefit_intro": "Το μαγνήσιο συμμετέχει καθημερινά σε εκατοντάδες βιολογικές διεργασίες που επηρεάζουν την ενέργεια, τους μυς και το νευρικό σύστημα.",
         "micro_tagline": "Κάθε ημέρα λίγο περισσότερη ισορροπία.",
@@ -389,9 +400,14 @@ def render_why(slug, product):
 <section id="{root}" aria-label="Why choose {escape(product['name'])}">
   <h2 class="sr-only">Γιατί να επιλέξετε το {escape(product['name'])}</h2>
   <div class="shell layout">
-    <div class="model-stage soft">
-      <model-viewer class="viewer" camera-controls auto-rotate rotation-per-second="18deg" shadow-intensity="1" exposure="1.05" interaction-prompt="auto" alt="Interactive 3D model of {escape(product['name'])}"></model-viewer>
-      <div class="model-fallback"><span class="eyebrow">Interactive product</span><strong>3D MODEL</strong><small>Replace MODEL_URL in the script</small></div>
+    <div class="formula-stage soft" aria-hidden="true">
+      <div class="formula-orbit formula-orbit--one"></div>
+      <div class="formula-orbit formula-orbit--two"></div>
+      <div class="formula-core">{svg(product['benefit_icons'][0])}<strong>CLINICAL<br>FORMULA</strong></div>
+      <span class="formula-chip formula-chip--one">01</span>
+      <span class="formula-chip formula-chip--two">02</span>
+      <span class="formula-chip formula-chip--three">03</span>
+      <span class="formula-chip formula-chip--four">04</span>
     </div>
     <article class="story">
       <span class="eyebrow">B2H Clinical Series · {escape(product['name'])}</span>
@@ -406,11 +422,17 @@ def render_why(slug, product):
 <style>
 #{root}{{padding:clamp(26px,5vw,76px) 0}}
 #{root} .layout{{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:clamp(18px,3vw,46px);align-items:stretch}}
-#{root} .model-stage{{position:relative;min-height:clamp(520px,58vw,760px);border-radius:clamp(26px,3vw,44px);overflow:hidden}}
-#{root} .viewer{{width:100%;height:100%;display:none;background:radial-gradient(circle at 50% 38%,white,transparent 52%)}}
-#{root} .model-fallback{{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--brown);gap:10px}}
-#{root} .model-fallback strong{{font-size:clamp(3rem,8vw,8rem);line-height:.85;opacity:.18}}
-#{root} .model-fallback small{{opacity:.65}}
+#{root} .formula-stage{{position:relative;min-height:clamp(520px,58vw,760px);border-radius:clamp(26px,3vw,44px);overflow:hidden;display:grid;place-items:center}}
+#{root} .formula-stage:before{{content:"";position:absolute;inset:9%;border-radius:42% 58% 52% 48%;background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.96),rgba(255,255,255,.18) 58%,transparent 60%);filter:blur(1px)}}
+#{root} .formula-orbit{{position:absolute;border:1px solid color-mix(in srgb,var(--brown) 24%,transparent);border-radius:50%;animation:b2hOrbit 18s linear infinite}}
+#{root} .formula-orbit--one{{width:68%;aspect-ratio:1;transform:rotate(18deg)}}
+#{root} .formula-orbit--two{{width:48%;aspect-ratio:1;transform:rotate(-24deg);animation-direction:reverse;animation-duration:13s}}
+#{root} .formula-core{{position:relative;z-index:2;width:clamp(190px,26vw,330px);aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;background:linear-gradient(145deg,var(--brown),color-mix(in srgb,var(--brown) 68%,var(--caramel)));color:#fff;box-shadow:0 28px 65px rgba(70,50,38,.25)}}
+#{root} .formula-core svg{{font-size:2rem}}
+#{root} .formula-core strong{{font-size:clamp(1.25rem,2.3vw,2rem);letter-spacing:.08em;line-height:1}}
+#{root} .formula-chip{{position:absolute;z-index:3;width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:#fff;color:var(--brown);font-weight:900;box-shadow:0 12px 30px rgba(70,50,38,.15)}}
+#{root} .formula-chip--one{{top:14%;left:18%}}#{root} .formula-chip--two{{top:22%;right:13%}}#{root} .formula-chip--three{{bottom:17%;left:12%}}#{root} .formula-chip--four{{right:20%;bottom:11%}}
+@keyframes b2hOrbit{{to{{rotate:360deg}}}}
 #{root} .story{{border-radius:clamp(26px,3vw,44px);padding:clamp(26px,4vw,58px);background:linear-gradient(160deg,#fff,color-mix(in srgb,var(--blue) 45%,white));box-shadow:0 22px 60px rgba(117,92,73,.12)}}
 #{root} .lead{{font-size:clamp(1.5rem,2.7vw,2.9rem);line-height:1.08;font-weight:850;margin:.7rem 0 1.3rem}}
 #{root} .story>p:not(.lead){{line-height:1.7;font-size:1.05rem;color:var(--brown)}}
@@ -425,20 +447,13 @@ def render_why(slug, product):
 #{root} .ingredient-panel{{min-height:145px;border-radius:20px;padding:24px;background:linear-gradient(145deg,var(--brown),color-mix(in srgb,var(--brown) 72%,var(--caramel)));color:white}}
 #{root} .ingredient-panel strong{{font-size:1.25rem}}
 #{root} .ingredient-panel p{{margin:.65rem 0 0;line-height:1.55;opacity:.88}}
-@media(max-width:900px){{#{root} .layout{{grid-template-columns:1fr}}#{root} .model-stage{{min-height:560px}}}}
-@media(max-width:560px){{#{root} .model-stage{{min-height:430px}}#{root} .ingredient-buttons{{grid-template-columns:1fr 1fr}}}}
+@media(max-width:900px){{#{root} .layout{{grid-template-columns:1fr}}#{root} .formula-stage{{min-height:560px}}}}
+@media(max-width:560px){{#{root} .formula-stage{{min-height:430px}}#{root} .ingredient-buttons{{grid-template-columns:1fr 1fr}}}}
 </style>
 <script>
 (() => {{
   const root = document.getElementById('{root}');
   if (!root || root.dataset.ready) return; root.dataset.ready='true';
-  const MODEL_URL = ''; // Paste the public .glb URL here.
-  const POSTER_URL = ''; // Optional public poster-image URL.
-  const viewer = root.querySelector('.viewer');
-  if (MODEL_URL) {{
-    viewer.setAttribute('src', MODEL_URL); if (POSTER_URL) viewer.setAttribute('poster', POSTER_URL); viewer.style.display='block'; root.querySelector('.model-fallback').hidden=true;
-    if (!document.querySelector('script[data-b2h-model-viewer]')) {{ const loader=document.createElement('script'); loader.type='module'; loader.src='https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js'; loader.dataset.b2hModelViewer='true'; document.head.appendChild(loader); }}
-  }}
   const panelTitle=root.querySelector('.ingredient-panel strong'), panelCopy=root.querySelector('.ingredient-panel p');
   root.querySelectorAll('.ingredient').forEach(button=>button.addEventListener('click',()=>{{root.querySelectorAll('.ingredient').forEach(item=>item.classList.remove('is-active'));button.classList.add('is-active');panelTitle.textContent=button.dataset.title;panelCopy.textContent=button.dataset.copy;}}));
 }})();
@@ -504,21 +519,39 @@ def render_usage(slug, product):
     steps = "".join(f'<button type="button" class="step checker{" is-active" if i == 0 else ""}" data-title="{escape(title)}" data-copy="{escape(copy)}"><span>{num}</span><strong>{escape(title)}</strong></button>' for i, (num, title, copy) in enumerate(product["usage_steps"]))
     first = product["usage_steps"][0]
     closing = "".join(f"<p>{escape(line)}</p>" for line in product["closing"])
+    image_urls = ",\n    ".join(repr(url) for url in product["usage_images"])
     return f"""<!-- B2H {escape(product['name'])} / SECTION 04: HOW TO USE -->
 <section id="{root}" aria-label="How to use {escape(product['name'])}">
   <h2 class="sr-only">{escape(product['name'])} - Οδηγίες χρήσης</h2>
   <div class="shell usage-wrap soft">
-    <div class="usage-main">
-      <span class="eyebrow">{escape(product['name'])}</span>
-      <p class="lead">{escape(product['usage'])}</p>
-      <div class="steps">{steps}</div>
-      <article class="step-panel"><strong>{escape(first[1])}</strong><p>{escape(first[2])}</p></article>
+    <div class="usage-top">
+      <div class="usage-main">
+        <span class="eyebrow">{escape(product['name'])}</span>
+        <p class="lead">{escape(product['usage'])}</p>
+        <div class="steps">{steps}</div>
+        <article class="step-panel"><strong>{escape(first[1])}</strong><p>{escape(first[2])}</p></article>
+      </div>
+      <aside class="dose-card">
+        <span class="dose-number">{escape(product['usage_stat'][0])}</span>
+        <strong>{escape(product['usage_stat'][1])}</strong>
+        <small>Σταθερή καθημερινή ρουτίνα</small>
+      </aside>
     </div>
-    <aside class="dose-card">
-      <span class="dose-number">{escape(product['usage_stat'][0])}</span>
-      <strong>{escape(product['usage_stat'][1])}</strong>
-      <div class="product-slot">OPTIONAL PRODUCT IMAGE</div>
-    </aside>
+    <div class="model-collage">
+      <div class="photo-stack photo-stack--left">
+        <div class="usage-photo" data-index="0"><span>IMAGE 1</span></div>
+        <div class="usage-photo" data-index="1"><span>IMAGE 2</span></div>
+      </div>
+      <div class="bottle-stage" aria-label="Interactive 3D bottle for {escape(product['name'])}">
+        <canvas class="bottle-canvas"></canvas>
+        <div class="model-status"><strong>3D PRODUCT</strong><span>Loading interactive bottle…</span></div>
+        <p class="model-hint">Σύρετε για περιστροφή · Scroll για zoom</p>
+      </div>
+      <div class="photo-stack photo-stack--right">
+        <div class="usage-photo" data-index="2"><span>IMAGE 3</span></div>
+        <div class="usage-photo" data-index="3"><span>IMAGE 4</span></div>
+      </div>
+    </div>
     <div class="closing-copy">{closing}</div>
     <p class="disclaimer">{escape(product['disclaimer'])}</p>
   </div>
@@ -526,7 +559,8 @@ def render_usage(slug, product):
 {common_tokens(product, root)}
 <style>
 #{root}{{padding:clamp(26px,5vw,76px) 0}}
-#{root} .usage-wrap{{border-radius:clamp(26px,3vw,46px);padding:clamp(24px,4vw,56px);display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(20px,4vw,54px)}}
+#{root} .usage-wrap{{border-radius:clamp(26px,3vw,46px);padding:clamp(24px,4vw,56px)}}
+#{root} .usage-top{{display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(20px,4vw,54px)}}
 #{root} .lead{{font-size:clamp(1.4rem,2.5vw,2.55rem);font-weight:850;line-height:1.12;margin:.7rem 0 1.8rem;max-width:25ch}}
 #{root} .steps{{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}}
 #{root} .step{{border:0;border-radius:20px;min-height:150px;padding:20px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:transform .25s}}
@@ -540,20 +574,63 @@ def render_usage(slug, product):
 #{root} .dose-card{{border-radius:clamp(24px,3vw,38px);padding:clamp(24px,4vw,46px);background:linear-gradient(145deg,var(--brown),color-mix(in srgb,var(--brown) 70%,var(--caramel)));color:white;display:flex;flex-direction:column;justify-content:center;text-align:center;overflow:hidden;min-height:430px}}
 #{root} .dose-number{{font-size:clamp(5rem,10vw,10rem);font-weight:950;line-height:.8}}
 #{root} .dose-card>strong{{font-size:clamp(1rem,1.8vw,1.45rem);text-transform:uppercase;margin:1rem 0 2rem}}
-#{root} .product-slot{{min-height:150px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.04));background-size:cover;background-position:center;font-size:.75rem;letter-spacing:.12em;opacity:.8}}
-#{root} .closing-copy{{grid-column:1/-1;text-align:center;padding:clamp(18px,3vw,34px);border-radius:22px;background:rgba(255,255,255,.58);color:var(--brown)}}
+#{root} .dose-card small{{opacity:.72;font-weight:700}}
+#{root} .model-collage{{display:grid;grid-template-columns:minmax(150px,.42fr) minmax(360px,1.16fr) minmax(150px,.42fr);gap:clamp(12px,2vw,24px);margin-top:clamp(22px,4vw,48px);align-items:stretch}}
+#{root} .photo-stack{{display:grid;grid-template-rows:1fr 1fr;gap:clamp(12px,2vw,24px)}}
+#{root} .usage-photo{{min-height:210px;border-radius:clamp(20px,2.5vw,34px);display:grid;place-items:center;background:linear-gradient(145deg,var(--gold),var(--blue));background-size:cover;background-position:center;overflow:hidden;box-shadow:0 16px 40px rgba(77,59,46,.12);transition:transform .3s}}
+#{root} .usage-photo:nth-child(2){{background-image:linear-gradient(145deg,var(--blue),var(--gold))}}
+#{root} .usage-photo:hover{{transform:translateY(-5px)}}
+#{root} .usage-photo span{{font-size:.72rem;font-weight:900;letter-spacing:.13em;color:var(--brown);opacity:.58}}
+#{root} .bottle-stage{{position:relative;min-height:clamp(560px,58vw,760px);border-radius:clamp(24px,3vw,42px);overflow:hidden;background:radial-gradient(circle at 50% 35%,#fff 0 22%,color-mix(in srgb,var(--blue) 55%,white) 58%,color-mix(in srgb,var(--gold) 72%,white));box-shadow:inset 0 0 0 1px rgba(255,255,255,.65),0 24px 60px rgba(77,59,46,.16)}}
+#{root} .bottle-canvas{{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab}}
+#{root} .bottle-canvas:active{{cursor:grabbing}}
+#{root} .model-status{{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;color:var(--brown);pointer-events:none;transition:opacity .35s}}
+#{root} .model-status strong{{font-size:clamp(2.4rem,5vw,5rem);opacity:.13}}
+#{root} .model-status span{{font-size:.78rem;font-weight:800;letter-spacing:.08em}}
+#{root} .model-status.is-hidden{{opacity:0}}
+#{root} .model-hint{{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);margin:0;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.72);color:var(--brown);font-size:.72rem;font-weight:800;white-space:nowrap;backdrop-filter:blur(10px)}}
+#{root} .closing-copy{{margin-top:clamp(22px,4vw,48px);text-align:center;padding:clamp(18px,3vw,34px);border-radius:22px;background:rgba(255,255,255,.58);color:var(--brown)}}
 #{root} .closing-copy p{{margin:.35rem 0;font-size:clamp(1rem,1.7vw,1.35rem);font-weight:800}}
-#{root} .disclaimer{{grid-column:1/-1;margin:0;padding-top:20px;border-top:1px solid rgba(117,92,73,.22);font-size:.82rem;line-height:1.55;color:var(--brown)}}
-@media(max-width:850px){{#{root} .usage-wrap{{grid-template-columns:1fr}}#{root} .dose-card{{min-height:350px}}}}
-@media(max-width:560px){{#{root} .steps{{grid-template-columns:1fr}}#{root} .step{{min-height:110px}}}}
+#{root} .disclaimer{{margin:20px 0 0;padding-top:20px;border-top:1px solid rgba(117,92,73,.22);font-size:.82rem;line-height:1.55;color:var(--brown)}}
+@media(max-width:900px){{#{root} .usage-top{{grid-template-columns:1fr}}#{root} .dose-card{{min-height:300px}}#{root} .model-collage{{grid-template-columns:1fr 1fr}}#{root} .bottle-stage{{grid-column:1/-1;grid-row:1;min-height:600px}}#{root} .photo-stack{{grid-template-columns:1fr 1fr;grid-template-rows:1fr}}}}
+@media(max-width:560px){{#{root} .steps{{grid-template-columns:1fr}}#{root} .step{{min-height:110px}}#{root} .model-collage{{grid-template-columns:1fr}}#{root} .bottle-stage{{min-height:500px}}#{root} .photo-stack{{grid-template-columns:1fr 1fr}}#{root} .usage-photo{{min-height:150px}}}}
 </style>
 <script>
 (() => {{
   const root=document.getElementById('{root}');if(!root||root.dataset.ready)return;root.dataset.ready='true';
-  const PRODUCT_IMAGE_URL=''; // Optional public product-image URL.
-  const slot=root.querySelector('.product-slot');if(PRODUCT_IMAGE_URL){{slot.style.backgroundImage=`url("${{PRODUCT_IMAGE_URL}}")`;slot.textContent='';}}
+  const USAGE_IMAGE_URLS=[
+    {image_urls}
+  ]; // Replace empty strings with public rounded-card image URLs.
+  root.querySelectorAll('.usage-photo').forEach((card,index)=>{{if(USAGE_IMAGE_URLS[index]){{card.style.backgroundImage=`url("${{USAGE_IMAGE_URLS[index]}}")`;card.querySelector('span').hidden=true;}}}});
   const title=root.querySelector('.step-panel strong'),copy=root.querySelector('.step-panel p');root.querySelectorAll('.step').forEach(button=>button.addEventListener('click',()=>{{root.querySelectorAll('.step').forEach(item=>item.classList.remove('is-active'));button.classList.add('is-active');title.textContent=button.dataset.title;copy.textContent=button.dataset.copy;}}));
 }})();
+</script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.164.0/build/three.module.js';
+import {{ OrbitControls }} from 'https://cdn.jsdelivr.net/npm/three@0.164.0/examples/jsm/controls/OrbitControls.js';
+import {{ GLTFLoader }} from 'https://cdn.jsdelivr.net/npm/three@0.164.0/examples/jsm/loaders/GLTFLoader.js';
+
+const root=document.getElementById('{root}');
+if(root&&!root.dataset.modelReady){{
+  root.dataset.modelReady='true';
+  const MODEL_URL='https://wearenextgen.github.io/b2h-viewer/assets/models/b2h-bottle-base.glb';
+  const LABEL_URL='{product['label_url']}';
+  const canvas=root.querySelector('.bottle-canvas'),stage=root.querySelector('.bottle-stage'),status=root.querySelector('.model-status');
+  const initialize=()=>{{
+    const renderer=new THREE.WebGLRenderer({{canvas,antialias:true,alpha:true}});renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+    const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(34,1,.001,1000);
+    const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.07;controls.autoRotate=true;controls.autoRotateSpeed=1.35;controls.enablePan=false;controls.minPolarAngle=Math.PI*.18;controls.maxPolarAngle=Math.PI*.78;canvas.addEventListener('pointerdown',()=>controls.autoRotate=false,{{once:true}});
+    scene.add(new THREE.HemisphereLight(0xffffff,0xc9d9df,2.2));const key=new THREE.DirectionalLight(0xfff8ec,2.3);key.position.set(3,5,4);scene.add(key);const fill=new THREE.DirectionalLight(0xd7ecff,1.35);fill.position.set(-4,2,-3);scene.add(fill);const rim=new THREE.DirectionalLight(0xffffff,.8);rim.position.set(0,4,-5);scene.add(rim);
+    const labelTexture=new THREE.TextureLoader().load(LABEL_URL);labelTexture.colorSpace=THREE.SRGBColorSpace;labelTexture.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());
+    new GLTFLoader().load(MODEL_URL,gltf=>{{
+      const model=gltf.scene;const box=new THREE.Box3().setFromObject(model);const center=box.getCenter(new THREE.Vector3());model.position.sub(center);scene.add(model);
+      const worldBox=new THREE.Box3().setFromObject(model),size=worldBox.getSize(new THREE.Vector3()),maxDim=Math.max(size.x,size.y,size.z);camera.position.set(0,size.y*.02,maxDim*1.92);controls.target.set(0,0,0);controls.minDistance=maxDim*.95;controls.maxDistance=maxDim*4;controls.update();
+      const yMin=worldBox.min.y+size.y*.075,yMax=worldBox.min.y+size.y*.69,labelHeight=yMax-yMin,radius=Math.max(size.x,size.z)/2*1.016;const geometry=new THREE.CylinderGeometry(radius,radius,labelHeight,128,1,true);const material=new THREE.MeshStandardMaterial({{map:labelTexture,roughness:.3,metalness:0,side:THREE.FrontSide}});const label=new THREE.Mesh(geometry,material);label.position.y=(yMin+yMax)/2;label.rotation.y=Math.PI/2;scene.add(label);status.classList.add('is-hidden');
+    }},xhr=>{{if(xhr.total)status.querySelector('span').textContent=`Loading 3D… ${{Math.round(xhr.loaded/xhr.total*100)}}%`;}},()=>{{status.querySelector('span').textContent='3D model unavailable';}});
+    const resize=()=>{{const width=stage.clientWidth,height=stage.clientHeight;renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}};new ResizeObserver(resize).observe(stage);resize();let active=true;const observer=new IntersectionObserver(entries=>active=entries[0].isIntersecting,{{rootMargin:'120px'}});observer.observe(stage);const animate=()=>{{requestAnimationFrame(animate);if(!active)return;controls.update();renderer.render(scene,camera);}};animate();
+  }};
+  const observer=new IntersectionObserver(entries=>{{if(entries[0].isIntersecting){{observer.disconnect();initialize();}}}},{{rootMargin:'300px'}});observer.observe(stage);
+}}
 </script>
 """
 

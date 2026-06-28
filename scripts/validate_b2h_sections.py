@@ -16,6 +16,7 @@ class AuditParser(HTMLParser):
         self.visible_h2 = 0
         self.photo_cards = 0
         self.model_viewers = 0
+        self.bottle_canvases = 0
 
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
@@ -29,6 +30,8 @@ class AuditParser(HTMLParser):
             self.photo_cards += 1
         if tag == "model-viewer":
             self.model_viewers += 1
+        if tag == "canvas" and "bottle-canvas" in attributes.get("class", "").split():
+            self.bottle_canvases += 1
 
 
 def audit(path):
@@ -45,8 +48,10 @@ def audit(path):
         errors.append("contains a visible section h2")
     if path.name == "01-benefits.html" and parser.photo_cards != 6:
         errors.append(f"expected 6 photo cards, found {parser.photo_cards}")
-    if path.name == "02-why-choose.html" and parser.model_viewers != 1:
-        errors.append(f"expected 1 model-viewer, found {parser.model_viewers}")
+    if path.name == "02-why-choose.html" and parser.model_viewers:
+        errors.append("3D viewer must not be in Section 02")
+    if path.name == "04-how-to-use.html" and parser.bottle_canvases != 1:
+        errors.append(f"expected 1 bottle canvas, found {parser.bottle_canvases}")
     if "PASTE_" in content:
         errors.append("contains an unresolved PASTE_ token")
     if not re.search(r"@media\(max-width:", content):
@@ -72,4 +77,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
