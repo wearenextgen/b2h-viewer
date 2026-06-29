@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>B2H Multivitamin — 360° Viewer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #ffffff; overflow: hidden; }
+    canvas { display: block; }
+    #hint {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      font-size: 12px; color: #9ab9b7; letter-spacing: 0.06em; pointer-events: none;
+      display: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    #loading {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; background: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; gap: 16px;
+    }
+    #bar-wrap { width: 200px; height: 3px; background: #dff5f4; border-radius: 2px; }
+    #bar { height: 100%; width: 0%; background: #1fb8b3; border-radius: 2px; transition: width 0.2s; }
+    #pct { font-size: 12px; color: #7aa4a1; }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div id="bar-wrap"><div id="bar"></div></div>
+    <div id="pct">Loading…</div>
+  </div>
+  <div id="hint">Drag to rotate · Scroll to zoom</div>
+
+  <script type="importmap">
+  { "imports": {
+      "three": "https://unpkg.com/three@0.164.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.164.0/examples/jsm/"
+  }}
+  </script>
+
+  <script type="module">
+    import * as THREE        from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
+    document.body.appendChild(renderer.domElement);
+
+    const scene  = new THREE.Scene();
+    scene.background = new THREE.Color(0xffffff);
+    const camera = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, 0.001, 1000);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping   = true;
+    controls.dampingFactor   = 0.07;
+    controls.autoRotate      = true;
+    controls.autoRotateSpeed = 1.35;
+    controls.minPolarAngle   = Math.PI * 0.18;
+    controls.maxPolarAngle   = Math.PI * 0.78;
+    renderer.domElement.addEventListener('pointerdown', () => controls.autoRotate = false);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.85));
+    const key = new THREE.DirectionalLight(0xf7fffe, 1.15);
+    key.position.set(2.2, 4.2, 3.2);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xe4fffb, 0.75);
+    fill.position.set(-3, 2, -2);
+    scene.add(fill);
+    const back = new THREE.DirectionalLight(0xffffff, 0.35);
+    back.position.set(0, 1, -4);
+    scene.add(back);
+
+    new GLTFLoader().load(
+      'multivitamin_final.glb',
+      (gltf) => {
+        const model = gltf.scene;
+
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        model.position.sub(center);
+
+        const maxDim = Math.max(size.x, size.y, size.z);
+        camera.position.set(0, 0, maxDim * 1.95);
+        controls.target.set(0, 0, 0);
+        controls.minDistance = maxDim * 0.72;
+        controls.maxDistance = maxDim * 6;
+        controls.update();
+
+        scene.add(model);
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('hint').style.display    = 'block';
+      },
+      (xhr) => {
+        if (xhr.total) {
+          const p = Math.round(xhr.loaded / xhr.total * 100);
+          document.getElementById('bar').style.width = p + '%';
+          document.getElementById('pct').textContent = 'Loading… ' + p + '%';
+        }
+      },
+      (err) => {
+        console.error(err);
+        document.getElementById('pct').textContent = 'Error — check console';
+      }
+    );
+
+    window.addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    (function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    })();
+  </script>
+</body>
+</html>
