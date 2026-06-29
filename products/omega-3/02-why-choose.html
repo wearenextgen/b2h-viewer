@@ -2,7 +2,16 @@
 <!-- B2H B2H Omega-3 / SECTION 02: WHY CHOOSE -->
 <section id="b2h-omega-3-why" aria-label="Why choose B2H Omega-3">
   <h2 class="sr-only">Γιατί να επιλέξετε το B2H Omega-3</h2>
-  <div class="shell layout">
+  <div class="shell">
+    <div class="photo-grid" aria-label="Συλλογή εικόνων προϊόντος">
+      <figure class="photo-card" data-index="0" role="button" tabindex="0"><div class="photo-media"><span class="slot"><b>ΕΙΚΟΝΑ 1</b><small>Οριζόντια</small></span></div><figcaption><strong>Υψηλή περιεκτικότητα</strong><p>Οπτικό για τη βιολογικά ουσιαστική δόση EPA και DHA.</p></figcaption></figure>
+      <figure class="photo-card" data-index="1" role="button" tabindex="0"><div class="photo-media"><span class="slot"><b>ΕΙΚΟΝΑ 2</b><small>Κάθετη</small></span></div><figcaption><strong>Καθαρό ιχθυέλαιο</strong><p>Λεπτομέρεια προϊόντος ή κάψουλας με premium αισθητική.</p></figcaption></figure>
+      <figure class="photo-card" data-index="2" role="button" tabindex="0"><div class="photo-media"><span class="slot"><b>ΕΙΚΟΝΑ 3</b><small>Κάθετη</small></span></div><figcaption><strong>Καρδιά</strong><p>Εικόνα που επικοινωνεί την καθημερινή καρδιαγγειακή υποστήριξη.</p></figcaption></figure>
+      <figure class="photo-card" data-index="3" role="button" tabindex="0"><div class="photo-media"><span class="slot"><b>ΕΙΚΟΝΑ 4</b><small>Τετράγωνη</small></span></div><figcaption><strong>Ποιότητα</strong><p>Οπτικό καθαρότητας, ελέγχου και χαμηλής οξείδωσης.</p></figcaption></figure>
+      <figure class="photo-card" data-index="4" role="button" tabindex="0"><div class="photo-media"><span class="slot"><b>ΕΙΚΟΝΑ 5</b><small>Οριζόντια</small></span></div><figcaption><strong>Καθημερινή χρήση</strong><p>Ένα lifestyle οπτικό για την εύκολη λήψη μίας κάψουλας την ημέρα.</p></figcaption></figure>
+      <figure class="photo-card" data-index="5" role="button" tabindex="0"><div class="photo-media"><span class="slot"><b>ΕΙΚΟΝΑ 6</b><small>Τετράγωνη</small></span></div><figcaption><strong>Εγκέφαλος &amp; αρθρώσεις</strong><p>Οπτικό ευεξίας, γνωστικής απόδοσης ή καθημερινής κινητικότητας.</p></figcaption></figure>
+    </div>
+    <div class="layout">
     <div class="formula-stage soft" aria-hidden="true">
       <div class="formula-orbit formula-orbit--one"></div>
       <div class="formula-orbit formula-orbit--two"></div>
@@ -21,6 +30,7 @@
       <div class="ingredient-panel"><strong>Καρδιά</strong><p>Τα EPA και DHA συμβάλλουν στη φυσιολογική λειτουργία της καρδιάς.</p></div>
       <details class="approved-copy"><summary>Δείτε όλα τα βασικά σημεία</summary><div><ul class="key-points"><li>Υψηλή δόση EPA (500 mg) και DHA (250 mg)</li><li>Υποστήριξη καρδιάς, εγκεφάλου και αρθρώσεων</li><li>Συμβολή στη ρύθμιση της φλεγμονής</li><li>Καθαρό ιχθυέλαιο με έλεγχο βαρέων μετάλλων</li><li>Χαμηλή οξείδωση για μέγιστη ποιότητα</li><li>Μία κάψουλα την ημέρα για εύκολη χρήση</li></ul><p>Η φόρμουλα δίνει έμφαση στην καθαρότητα και τη βιοδιαθεσιμότητα, ώστε ο οργανισμός να αξιοποιεί πραγματικά τα ωφέλιμα λιπαρά οξέα χωρίς περιττές επιβαρύνσεις.</p><p>Ιδανική επιλογή για όσους θέλουν ουσιαστική ενίσχυση καρδιαγγειακής και εγκεφαλικής υγείας, καλύπτοντας αποτελεσματικά τις καθημερινές ανάγκες σε ωμέγα-3.</p></div></details>
     </article>
+    </div>
   </div>
 </section>
 
@@ -40,6 +50,23 @@
 </style>
 <style>
 #b2h-omega-3-why{padding:clamp(26px,5vw,76px) 0}
+#b2h-omega-3-why .photo-grid{display:grid;grid-template-columns:1.35fr .82fr 1fr;grid-template-rows:repeat(2,clamp(210px,22vw,380px));gap:clamp(12px,1.6vw,24px);margin-bottom:clamp(24px,4vw,52px)}
+#b2h-omega-3-why .photo-card{margin:0;position:relative;border-radius:clamp(18px,2vw,30px);overflow:hidden;cursor:grab;touch-action:none;box-shadow:0 18px 44px var(--shadow-strong);transform:translate3d(0,0,0);transition:transform .45s cubic-bezier(.22,1,.36,1),box-shadow .3s;outline:none}
+#b2h-omega-3-why .photo-card:focus-visible{box-shadow:0 0 0 4px color-mix(in srgb,var(--caramel) 42%,white),0 18px 44px var(--shadow-strong)}
+#b2h-omega-3-why .photo-card:active{cursor:grabbing}
+#b2h-omega-3-why .photo-media{width:100%;height:100%;position:relative;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 74%,white),color-mix(in srgb,var(--blue) 82%,white));background-size:cover;background-position:center;transition:filter .35s,transform .45s}
+#b2h-omega-3-why .photo-card:nth-child(2n) .photo-media{background-image:linear-gradient(145deg,color-mix(in srgb,var(--blue) 78%,white),color-mix(in srgb,var(--gold) 76%,white))}
+#b2h-omega-3-why .photo-card:nth-child(3n) .photo-media{background-image:linear-gradient(145deg,color-mix(in srgb,var(--gold) 55%,white),color-mix(in srgb,var(--caramel) 28%,var(--blue)))}
+#b2h-omega-3-why .photo-media:before,#b2h-omega-3-why .photo-media:after{content:"";position:absolute;border:1px solid color-mix(in srgb,var(--brown) 18%,transparent);border-radius:50%;inset:15%;opacity:.7}
+#b2h-omega-3-why .photo-media:after{inset:29%;border-color:color-mix(in srgb,var(--caramel) 28%,transparent)}
+#b2h-omega-3-why .slot{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--brown);text-align:center;text-transform:uppercase}
+#b2h-omega-3-why .slot b{font-size:clamp(.78rem,1.15vw,1rem);letter-spacing:.16em}
+#b2h-omega-3-why .slot small{margin-top:7px;font-size:.62rem;font-weight:800;letter-spacing:.1em;opacity:.62}
+#b2h-omega-3-why figcaption{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(18px,2vw,30px);background:linear-gradient(transparent 18%,color-mix(in srgb,var(--brown) 88%,transparent));color:white;opacity:0;transform:translateY(12px);transition:.35s;pointer-events:none}
+#b2h-omega-3-why figcaption strong{font-size:clamp(1rem,1.5vw,1.45rem);text-transform:uppercase}
+#b2h-omega-3-why figcaption p{margin:.55rem 0 0;line-height:1.45;max-width:38ch}
+#b2h-omega-3-why .photo-card.is-open figcaption{opacity:1;transform:none}
+#b2h-omega-3-why .photo-card.is-open .photo-media{filter:blur(4px) brightness(.58);transform:scale(1.05)}
 #b2h-omega-3-why .layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:clamp(18px,3vw,46px);align-items:stretch}
 #b2h-omega-3-why .formula-stage{position:relative;min-height:clamp(520px,58vw,760px);border-radius:clamp(26px,3vw,44px);overflow:hidden;display:grid;place-items:center}
 #b2h-omega-3-why .formula-stage:before{content:"";position:absolute;inset:9%;border-radius:42% 58% 52% 48%;background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.96),rgba(255,255,255,.18) 58%,transparent 60%);filter:blur(1px)}
@@ -76,12 +103,25 @@
 #b2h-omega-3-why .ingredient-panel strong{font-size:1.25rem}
 #b2h-omega-3-why .ingredient-panel p{margin:.65rem 0 0;line-height:1.55;opacity:.88}
 @media(max-width:900px){#b2h-omega-3-why .layout{grid-template-columns:1fr}#b2h-omega-3-why .formula-stage{min-height:560px}}
+@media(max-width:720px){#b2h-omega-3-why .photo-grid{grid-template-rows:repeat(2,clamp(150px,43vw,230px));gap:9px}#b2h-omega-3-why .photo-card{border-radius:15px}#b2h-omega-3-why figcaption{padding:12px}#b2h-omega-3-why figcaption p{font-size:.76rem}}
 @media(max-width:560px){#b2h-omega-3-why .formula-stage{min-height:430px}#b2h-omega-3-why .formula-chip{width:66px;height:66px}#b2h-omega-3-why .ingredient-buttons{grid-template-columns:1fr 1fr}#b2h-omega-3-why .dose-highlights{grid-template-columns:1fr}#b2h-omega-3-why .dose-highlights div{min-height:82px}}
 </style>
 <script>
 (() => {
   const root = document.getElementById('b2h-omega-3-why');
   if (!root || root.dataset.ready) return; root.dataset.ready='true';
+  const IMAGE_URLS = ['', '', '', '', '', ''];
+  root.querySelectorAll('.photo-card').forEach((card,index)=>{
+    const media=card.querySelector('.photo-media'),slot=card.querySelector('.slot');
+    if(IMAGE_URLS[index]){media.style.backgroundImage=`url("${IMAGE_URLS[index]}")`;slot.hidden=true;}
+    let startX=0,startY=0,dx=0,dy=0,moved=false;
+    const reset=()=>{card.style.transition='';card.style.transform='translate3d(0,0,0)';dx=0;dy=0;};
+    card.addEventListener('pointerdown',event=>{startX=event.clientX;startY=event.clientY;moved=false;card.setPointerCapture(event.pointerId);card.style.transition='none';});
+    card.addEventListener('pointermove',event=>{if(!card.hasPointerCapture(event.pointerId))return;const bounds=root.getBoundingClientRect(),cardBounds=card.getBoundingClientRect();dx=Math.max(bounds.left-cardBounds.left+dx,Math.min(bounds.right-cardBounds.right+dx,event.clientX-startX));dy=Math.max(-cardBounds.top+12+dy,Math.min(window.innerHeight-cardBounds.bottom+dy,event.clientY-startY));moved=Math.abs(dx)+Math.abs(dy)>8;card.style.transform=`translate3d(${dx}px,${dy}px,0)`;});
+    card.addEventListener('pointerup',event=>{card.releasePointerCapture(event.pointerId);reset();if(!moved)card.classList.toggle('is-open');});
+    card.addEventListener('pointercancel',reset);
+    card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();card.classList.toggle('is-open');}});
+  });
   const panelTitle=root.querySelector('.ingredient-panel strong'), panelCopy=root.querySelector('.ingredient-panel p');
   root.querySelectorAll('.ingredient').forEach(button=>button.addEventListener('click',()=>{root.querySelectorAll('.ingredient').forEach(item=>item.classList.remove('is-active'));button.classList.add('is-active');panelTitle.textContent=button.dataset.title;panelCopy.textContent=button.dataset.copy;}));
 })();
