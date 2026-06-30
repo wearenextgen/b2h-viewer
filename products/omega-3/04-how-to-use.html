@@ -108,14 +108,14 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.164.0/examples/
 const root=document.getElementById('b2h-omega-3-usage');
 if(root&&!root.dataset.modelReady){
   root.dataset.modelReady='true';
-  const MODEL_URL='https://wearenextgen.github.io/b2h-viewer/assets/models/b2h-bottle-base.glb';
-  const LABEL_URL='https://wearenextgen.github.io/b2h-viewer/assets/labels/omega-3.png';
+  const MODEL_URL='https://wearenextgen.github.io/b2h-viewer/omega3_final.glb';
+  const LABEL_URL='https://wearenextgen.github.io/b2h-viewer/label.png';
   const canvas=root.querySelector('.bottle-canvas'),stage=root.querySelector('.bottle-stage'),status=root.querySelector('.model-status');
   const initialize=()=>{
-    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
-    const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(34,1,.001,1000);
-    const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.07;controls.autoRotate=true;controls.autoRotateSpeed=1.35;controls.enablePan=false;controls.minPolarAngle=Math.PI*.18;controls.maxPolarAngle=Math.PI*.78;canvas.addEventListener('pointerdown',()=>controls.autoRotate=false,{once:true});
-    scene.add(new THREE.HemisphereLight(0xffffff,0xc9d9df,2.2));const key=new THREE.DirectionalLight(0xfff8ec,2.3);key.position.set(3,5,4);scene.add(key);const fill=new THREE.DirectionalLight(0xd7ecff,1.35);fill.position.set(-4,2,-3);scene.add(fill);const rim=new THREE.DirectionalLight(0xffffff,.8);rim.position.set(0,4,-5);scene.add(rim);
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
+    const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(36,1,.001,1000);
+    const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.07;controls.autoRotate=true;controls.autoRotateSpeed=1.5;controls.enablePan=false;controls.minPolarAngle=Math.PI*.18;controls.maxPolarAngle=Math.PI*.78;canvas.addEventListener('pointerdown',()=>controls.autoRotate=false,{once:true});
+    scene.add(new THREE.AmbientLight(0xffffff,1.8));const key=new THREE.DirectionalLight(0xfff8f2,1.2);key.position.set(2,4,3);scene.add(key);const fill=new THREE.DirectionalLight(0xf0f4ff,.7);fill.position.set(-3,2,-2);scene.add(fill);const back=new THREE.DirectionalLight(0xffffff,.3);back.position.set(0,1,-4);scene.add(back);
     const labelTexture=new THREE.TextureLoader().load(LABEL_URL);labelTexture.colorSpace=THREE.SRGBColorSpace;labelTexture.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());
     new GLTFLoader().load(MODEL_URL,gltf=>{
       const model=gltf.scene;const box=new THREE.Box3().setFromObject(model);const center=box.getCenter(new THREE.Vector3());model.position.sub(center);scene.add(model);

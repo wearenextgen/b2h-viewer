@@ -108,19 +108,17 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.164.0/examples/
 const root=document.getElementById('b2h-magnesium-usage');
 if(root&&!root.dataset.modelReady){
   root.dataset.modelReady='true';
-  const MODEL_URL='https://wearenextgen.github.io/b2h-viewer/assets/models/b2h-bottle-base.glb';
-  const LABEL_URL='https://wearenextgen.github.io/b2h-viewer/assets/labels/magnesium.png';
+  const MODEL_URL='https://wearenextgen.github.io/b2h-viewer/magnesium_final.glb';
   const canvas=root.querySelector('.bottle-canvas'),stage=root.querySelector('.bottle-stage'),status=root.querySelector('.model-status');
   const initialize=()=>{
-    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
     const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(34,1,.001,1000);
-    const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.07;controls.autoRotate=true;controls.autoRotateSpeed=1.35;controls.enablePan=false;controls.minPolarAngle=Math.PI*.18;controls.maxPolarAngle=Math.PI*.78;canvas.addEventListener('pointerdown',()=>controls.autoRotate=false,{once:true});
-    scene.add(new THREE.HemisphereLight(0xffffff,0xc9d9df,2.2));const key=new THREE.DirectionalLight(0xfff8ec,2.3);key.position.set(3,5,4);scene.add(key);const fill=new THREE.DirectionalLight(0xd7ecff,1.35);fill.position.set(-4,2,-3);scene.add(fill);const rim=new THREE.DirectionalLight(0xffffff,.8);rim.position.set(0,4,-5);scene.add(rim);
-    const labelTexture=new THREE.TextureLoader().load(LABEL_URL);labelTexture.colorSpace=THREE.SRGBColorSpace;labelTexture.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());
+    const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.07;controls.autoRotate=true;controls.autoRotateSpeed=1.4;controls.enablePan=false;controls.minPolarAngle=Math.PI*.18;controls.maxPolarAngle=Math.PI*.78;canvas.addEventListener('pointerdown',()=>controls.autoRotate=false,{once:true});
+    scene.add(new THREE.AmbientLight(0xffffff,1.85));const key=new THREE.DirectionalLight(0xfcfbff,1.18);key.position.set(2.2,4.2,3.2);scene.add(key);const fill=new THREE.DirectionalLight(0xf0edff,.78);fill.position.set(-3,2,-2);scene.add(fill);const back=new THREE.DirectionalLight(0xffffff,.35);back.position.set(0,1,-4);scene.add(back);
     new GLTFLoader().load(MODEL_URL,gltf=>{
-      const model=gltf.scene;const box=new THREE.Box3().setFromObject(model);const center=box.getCenter(new THREE.Vector3());model.position.sub(center);scene.add(model);
-      const worldBox=new THREE.Box3().setFromObject(model),size=worldBox.getSize(new THREE.Vector3()),maxDim=Math.max(size.x,size.y,size.z);camera.position.set(0,size.y*.02,maxDim*1.92);controls.target.set(0,0,0);controls.minDistance=maxDim*.95;controls.maxDistance=maxDim*4;controls.update();
-      const yMin=worldBox.min.y+size.y*.075,yMax=worldBox.min.y+size.y*.69,labelHeight=yMax-yMin,radius=Math.max(size.x,size.z)/2*1.016;const geometry=new THREE.CylinderGeometry(radius,radius,labelHeight,128,1,true);const material=new THREE.MeshStandardMaterial({map:labelTexture,roughness:.3,metalness:0,side:THREE.FrontSide});const label=new THREE.Mesh(geometry,material);label.position.y=(yMin+yMax)/2;label.rotation.y=Math.PI/2;scene.add(label);status.classList.add('is-hidden');
+      const model=gltf.scene;const box=new THREE.Box3().setFromObject(model);const center=box.getCenter(new THREE.Vector3());const size=box.getSize(new THREE.Vector3());model.position.sub(center);scene.add(model);
+      const maxDim=Math.max(size.x,size.y,size.z);camera.position.set(0,0,maxDim*1.95);controls.target.set(0,0,0);controls.minDistance=maxDim*.72;controls.maxDistance=maxDim*6;controls.update();
+      status.classList.add('is-hidden');
     },xhr=>{if(xhr.total)status.querySelector('span').textContent=`Loading 3D… ${Math.round(xhr.loaded/xhr.total*100)}%`;},()=>{status.querySelector('span').textContent='3D model unavailable';});
     const resize=()=>{const width=stage.clientWidth,height=stage.clientHeight;renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();};new ResizeObserver(resize).observe(stage);resize();let active=true;const observer=new IntersectionObserver(entries=>active=entries[0].isIntersecting,{rootMargin:'120px'});observer.observe(stage);const animate=()=>{requestAnimationFrame(animate);if(!active)return;controls.update();renderer.render(scene,camera);};animate();
   };
