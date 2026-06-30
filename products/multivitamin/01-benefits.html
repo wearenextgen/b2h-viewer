@@ -67,13 +67,13 @@
   if (!root || root.dataset.ready) return;
   root.dataset.ready = 'true';
   const IMAGE_URLS = [
-    '',
-    '',
-    '',
-    '',
-    '',
-    ''
-  ]; // Replace empty strings with public image URLs.
+    'https://wearenextgen.github.io/b2h-viewer/img/multivitamin-active-energy-horizontal.jpg',
+    'https://wearenextgen.github.io/b2h-viewer/img/multivitamin-mitochondrial-energy-horizontal.jpg',
+    'https://wearenextgen.github.io/b2h-viewer/img/multivitamin-immunity-shield-square.jpg',
+    'https://wearenextgen.github.io/b2h-viewer/img/multivitamin-cell-protection-horizontal.jpg',
+    'https://wearenextgen.github.io/b2h-viewer/img/multivitamin-joint-support-vertical.jpg',
+    'https://wearenextgen.github.io/b2h-viewer/img/multivitamin-tablet-in-hand-vertical.jpg'
+  ];
   root.querySelectorAll('.photo-card').forEach((card, index) => {
     const media = card.querySelector('.photo-media');
     const slot = card.querySelector('.slot');

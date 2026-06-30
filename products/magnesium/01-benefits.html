@@ -67,13 +67,13 @@
   if (!root || root.dataset.ready) return;
   root.dataset.ready = 'true';
   const IMAGE_URLS = [
-    '',
-    '',
-    '',
-    '',
-    '',
-    ''
-  ]; // Replace empty strings with public image URLs.
+    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-fatigue-relief-horizontal.png',
+    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-nervous-system-vertical.png',
+    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-muscle-function-square.png',
+    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-cellular-energy-horizontal.png',
+    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-bioavailability-vertical.png',
+    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-triple-complex-vertical.png'
+  ];
   root.querySelectorAll('.photo-card').forEach((card, index) => {
     const media = card.querySelector('.photo-media');
     const slot = card.querySelector('.slot');

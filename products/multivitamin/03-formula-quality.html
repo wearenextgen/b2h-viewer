@@ -52,7 +52,7 @@
 <script>
 (() => {
   const root=document.getElementById('b2h-multivitamin-quality');if(!root||root.dataset.ready)return;root.dataset.ready='true';
-  const IMAGE_URL=''; // Optional public formula/packaging image URL.
+  const IMAGE_URL='https://wearenextgen.github.io/b2h-viewer/img/multivitamin-ingredients-map-vertical.png';
   const band=root.querySelector('.image-band');if(IMAGE_URL){band.style.backgroundImage=`linear-gradient(color-mix(in srgb,var(--ink) 8%,transparent),color-mix(in srgb,var(--ink) 35%,transparent)),url("${IMAGE_URL}")`;band.querySelector('span').hidden=true;}
   const copy=root.querySelector('.audience-copy');root.querySelectorAll('.audience').forEach(button=>button.addEventListener('click',()=>{root.querySelectorAll('.audience').forEach(item=>item.classList.remove('is-active'));button.classList.add('is-active');copy.textContent=button.dataset.copy;}));
 })();

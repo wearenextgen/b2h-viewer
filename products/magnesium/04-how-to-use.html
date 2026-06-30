@@ -91,11 +91,11 @@
 (() => {
   const root=document.getElementById('b2h-magnesium-usage');if(!root||root.dataset.ready)return;root.dataset.ready='true';
   const USAGE_IMAGE_URLS=[
-    '',
-    '',
-    '',
-    ''
-  ]; // Replace empty strings with public rounded-card image URLs.
+    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-product-photo-vertical.png',
+    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-tablets-purple-horizontal.png',
+    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-product-mitochondria-horizontal.png',
+    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-formula-orbit-square.png'
+  ];
   root.querySelectorAll('.usage-photo').forEach((card,index)=>{if(USAGE_IMAGE_URLS[index]){card.style.backgroundImage=`url("${USAGE_IMAGE_URLS[index]}")`;card.querySelector('span').hidden=true;}});
   const title=root.querySelector('.step-panel strong'),copy=root.querySelector('.step-panel p');root.querySelectorAll('.step').forEach(button=>button.addEventListener('click',()=>{root.querySelectorAll('.step').forEach(item=>item.classList.remove('is-active'));button.classList.add('is-active');title.textContent=button.dataset.title;copy.textContent=button.dataset.copy;}));
 })();
