@@ -9,7 +9,7 @@
       <div><span class="eyebrow">Ιδανικό για</span><p class="audience-copy">Άτομα με απαιτητικό τρόπο ζωής</p></div>
       <div class="audience-buttons"><button type="button" class="audience is-active" data-copy="Άτομα με απαιτητικό τρόπο ζωής">Άτομα με απαιτητικό τρόπο ζωής</button><button type="button" class="audience" data-copy="Εργαζόμενους με αυξημένες καθημερινές υποχρεώσεις">Εργαζόμενους με αυξημένες καθημερινές υποχρεώσεις</button><button type="button" class="audience" data-copy="Άτομα που αισθάνονται εύκολα κόπωση">Άτομα που αισθάνονται εύκολα κόπωση</button><button type="button" class="audience" data-copy="Γυναίκες και άνδρες που επιθυμούν καθημερινή μικροθρεπτική υποστήριξη">Γυναίκες και άνδρες που επιθυμούν καθημερινή μικροθρεπτική υποστήριξη</button><button type="button" class="audience" data-copy="Άτομα που επιδιώκουν ολοκληρωμένη στρατηγική ευζωίας">Άτομα που επιδιώκουν ολοκληρωμένη στρατηγική ευζωίας</button></div>
     </div>
-    <div class="image-band"><span>OPTIONAL FORMULA / PACKAGING IMAGE</span></div>
+    <figure class="image-band"><img src="https://wearenextgen.github.io/b2h-viewer/img/multivitamin-ingredients-map-vertical.png" alt="" style="width:100%;height:auto;display:block;border-radius:inherit;"></figure>
   </div>
 </section>
 
@@ -46,14 +46,12 @@
 #b2h-multivitamin-quality .audience{border:0;border-radius:999px;padding:13px 17px;background:rgba(255,255,255,.75);color:var(--brown);font-weight:750;cursor:pointer;transition:.2s}
 #b2h-multivitamin-quality .audience:hover{transform:translateY(-2px)}
 #b2h-multivitamin-quality .audience.is-active{background:var(--brown);color:white}
-#b2h-multivitamin-quality .image-band{margin-top:clamp(18px,3vw,34px);height:clamp(260px,35vw,500px);border-radius:clamp(22px,3vw,40px);display:grid;place-items:center;background:linear-gradient(125deg,var(--blue),var(--gold));background-size:cover;background-position:center;color:var(--brown);font-weight:900;letter-spacing:.12em;text-align:center;overflow:hidden}
+#b2h-multivitamin-quality .image-band{margin-top:clamp(18px,3vw,34px);border-radius:clamp(22px,3vw,40px);overflow:hidden}
 @media(max-width:720px){#b2h-multivitamin-quality .quality-grid{grid-template-columns:1fr 1fr}#b2h-multivitamin-quality .quality{min-height:230px;padding:20px}#b2h-multivitamin-quality .stats{grid-template-columns:repeat(2,1fr)}#b2h-multivitamin-quality .audience-wrap{grid-template-columns:1fr}}
 </style>
 <script>
 (() => {
   const root=document.getElementById('b2h-multivitamin-quality');if(!root||root.dataset.ready)return;root.dataset.ready='true';
-  const IMAGE_URL='https://wearenextgen.github.io/b2h-viewer/img/multivitamin-ingredients-map-vertical.png';
-  const band=root.querySelector('.image-band');if(IMAGE_URL){band.style.backgroundImage=`linear-gradient(color-mix(in srgb,var(--ink) 8%,transparent),color-mix(in srgb,var(--ink) 35%,transparent)),url("${IMAGE_URL}")`;band.querySelector('span').hidden=true;}
   const copy=root.querySelector('.audience-copy');root.querySelectorAll('.audience').forEach(button=>button.addEventListener('click',()=>{root.querySelectorAll('.audience').forEach(item=>item.classList.remove('is-active'));button.classList.add('is-active');copy.textContent=button.dataset.copy;}));
 })();
 </script>

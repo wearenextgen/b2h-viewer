@@ -17,8 +17,8 @@
     </div>
     <div class="model-collage">
       <div class="photo-stack photo-stack--left">
-        <div class="usage-photo" data-index="0"><span>IMAGE 1</span></div>
-        <div class="usage-photo" data-index="1"><span>IMAGE 2</span></div>
+        <figure class="usage-photo"><img src="https://wearenextgen.github.io/b2h-viewer/img/magnesium-product-photo-vertical.png" alt="" style="width:100%;height:auto;display:block;border-radius:inherit;"></figure>
+        <figure class="usage-photo"><img src="https://wearenextgen.github.io/b2h-viewer/img/magnesium-tablets-purple-horizontal.png" alt="" style="width:100%;height:auto;display:block;border-radius:inherit;"></figure>
       </div>
       <div class="bottle-stage" aria-label="Interactive 3D bottle for B2H Magnesium Ultra Complex">
         <canvas class="bottle-canvas"></canvas>
@@ -26,8 +26,8 @@
         <p class="model-hint">Σύρετε για περιστροφή · Scroll για zoom</p>
       </div>
       <div class="photo-stack photo-stack--right">
-        <div class="usage-photo" data-index="2"><span>IMAGE 3</span></div>
-        <div class="usage-photo" data-index="3"><span>IMAGE 4</span></div>
+        <figure class="usage-photo"><img src="https://wearenextgen.github.io/b2h-viewer/img/magnesium-product-mitochondria-horizontal.png" alt="" style="width:100%;height:auto;display:block;border-radius:inherit;"></figure>
+        <figure class="usage-photo"><img src="https://wearenextgen.github.io/b2h-viewer/img/magnesium-formula-orbit-square.png" alt="" style="width:100%;height:auto;display:block;border-radius:inherit;"></figure>
       </div>
     </div>
     <div class="closing-copy"><p>Λιγότερη κόπωση. Περισσότερη ισορροπία. Κάθε ημέρα.</p><p>Γιατί η καθημερινή ευζωία ξεκινά από τη σωστή υποστήριξη του οργανισμού.</p></div>
@@ -69,10 +69,8 @@
 #b2h-magnesium-usage .dose-card small{opacity:.72;font-weight:700}
 #b2h-magnesium-usage .model-collage{display:grid;grid-template-columns:minmax(150px,.42fr) minmax(360px,1.16fr) minmax(150px,.42fr);gap:clamp(12px,2vw,24px);margin-top:clamp(22px,4vw,48px);align-items:stretch}
 #b2h-magnesium-usage .photo-stack{display:grid;grid-template-rows:1fr 1fr;gap:clamp(12px,2vw,24px)}
-#b2h-magnesium-usage .usage-photo{min-height:210px;border-radius:clamp(20px,2.5vw,34px);display:grid;place-items:center;background:linear-gradient(145deg,var(--gold),var(--blue));background-size:cover;background-position:center;overflow:hidden;box-shadow:0 16px 40px var(--shadow);transition:transform .3s}
-#b2h-magnesium-usage .usage-photo:nth-child(2){background-image:linear-gradient(145deg,var(--blue),var(--gold))}
+#b2h-magnesium-usage .usage-photo{border-radius:clamp(20px,2.5vw,34px);overflow:hidden;box-shadow:0 16px 40px var(--shadow);transition:transform .3s;margin:0}
 #b2h-magnesium-usage .usage-photo:hover{transform:translateY(-5px)}
-#b2h-magnesium-usage .usage-photo span{font-size:.72rem;font-weight:900;letter-spacing:.13em;color:var(--brown);opacity:.58}
 #b2h-magnesium-usage .bottle-stage{position:relative;min-height:clamp(560px,58vw,760px);border-radius:clamp(24px,3vw,42px);overflow:hidden;background:radial-gradient(circle at 50% 35%,#fff 0 22%,color-mix(in srgb,var(--blue) 55%,white) 58%,color-mix(in srgb,var(--gold) 72%,white));box-shadow:inset 0 0 0 1px rgba(255,255,255,.65),0 24px 60px var(--shadow-strong)}
 #b2h-magnesium-usage .bottle-canvas{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab}
 #b2h-magnesium-usage .bottle-canvas:active{cursor:grabbing}
@@ -90,13 +88,6 @@
 <script>
 (() => {
   const root=document.getElementById('b2h-magnesium-usage');if(!root||root.dataset.ready)return;root.dataset.ready='true';
-  const USAGE_IMAGE_URLS=[
-    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-product-photo-vertical.png',
-    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-tablets-purple-horizontal.png',
-    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-product-mitochondria-horizontal.png',
-    'https://wearenextgen.github.io/b2h-viewer/img/magnesium-formula-orbit-square.png'
-  ];
-  root.querySelectorAll('.usage-photo').forEach((card,index)=>{if(USAGE_IMAGE_URLS[index]){card.style.backgroundImage=`url("${USAGE_IMAGE_URLS[index]}")`;card.querySelector('span').hidden=true;}});
   const title=root.querySelector('.step-panel strong'),copy=root.querySelector('.step-panel p');root.querySelectorAll('.step').forEach(button=>button.addEventListener('click',()=>{root.querySelectorAll('.step').forEach(item=>item.classList.remove('is-active'));button.classList.add('is-active');title.textContent=button.dataset.title;copy.textContent=button.dataset.copy;}));
 })();
 </script>
