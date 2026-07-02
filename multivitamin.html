@@ -74,6 +74,11 @@
     back.position.set(0, 1, -4);
     scene.add(back);
 
+    // Label texture
+    const labelTex = new THREE.TextureLoader().load('multivitamin-label.png');
+    labelTex.colorSpace = THREE.SRGBColorSpace;
+    labelTex.anisotropy = 16;
+
     new GLTFLoader().load(
       'multivitamin_final.glb',
       (gltf) => {
@@ -91,7 +96,40 @@
         controls.maxDistance = maxDim * 6;
         controls.update();
 
+        // Plain white bottle — label cylinder sits on top
+        model.traverse(child => {
+          if (!child.isMesh) return;
+          child.material = new THREE.MeshStandardMaterial({
+            color: 0xf2f0ec,
+            roughness: 0.45,
+            metalness: 0.0,
+          });
+        });
         scene.add(model);
+
+        // World bounding box after centring
+        const wb    = new THREE.Box3().setFromObject(model);
+        const wSize = wb.getSize(new THREE.Vector3());
+
+        // Label band: bottom 7% → top 70% of bottle height
+        const yMin     = wb.min.y + wSize.y * 0.07;
+        const yMax     = wb.min.y + wSize.y * 0.70;
+        const lHeight  = yMax - yMin;
+        const lCenterY = (yMin + yMax) / 2;
+
+        const radius = Math.max(wSize.x, wSize.z) / 2 * 1.018;
+
+        const geo = new THREE.CylinderGeometry(radius, radius, lHeight, 128, 1, true);
+        const mat = new THREE.MeshStandardMaterial({
+          map:       labelTex,
+          roughness: 0.3,
+          metalness: 0.0,
+          side:      THREE.FrontSide,
+        });
+        const labelCyl = new THREE.Mesh(geo, mat);
+        labelCyl.position.y = lCenterY;
+        labelCyl.rotation.y  = Math.PI / 2;
+        scene.add(labelCyl);
 
         document.getElementById('loading').style.display = 'none';
         document.getElementById('hint').style.display    = 'block';
