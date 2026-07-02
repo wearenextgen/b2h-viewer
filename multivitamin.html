@@ -1,163 +1,281 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="el">
 <head>
   <meta charset="utf-8">
-  <title>B2H Multivitamin — 360° Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multivitamin Viewer</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #ffffff; overflow: hidden; }
-    canvas { display: block; }
-    #hint {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-      font-size: 12px; color: #9ab9b7; letter-spacing: 0.06em; pointer-events: none;
-      display: none;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    :root {
+      --accent: #74cfd3;
+      --accent-soft: rgba(116, 207, 211, 0.28);
+      --ink: rgba(24, 110, 115, 0.84);
+      --bg-a: #fcffff;
+      --bg-b: #e8fbfb;
     }
-    #loading {
-      position: fixed; inset: 0; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; background: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; gap: 16px;
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(255,255,255,0.96), transparent 28%),
+        radial-gradient(circle at 84% 10%, rgba(116,207,211,0.22), transparent 32%),
+        linear-gradient(180deg, var(--bg-a) 0%, var(--bg-b) 100%);
+      font-family: "Helvetica Neue", Arial, sans-serif;
     }
-    #bar-wrap { width: 200px; height: 3px; background: #dff5f4; border-radius: 2px; }
-    #bar { height: 100%; width: 0%; background: #1fb8b3; border-radius: 2px; transition: width 0.2s; }
-    #pct { font-size: 12px; color: #7aa4a1; }
+    #wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .loading {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(235,252,252,0.9));
+      z-index: 5;
+      transition: opacity 0.35s ease;
+    }
+    .loading.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .loading-card {
+      width: min(72vw, 280px);
+      text-align: center;
+    }
+    .loading-label {
+      margin: 0 0 12px;
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .loading-bar {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.9);
+      box-shadow: inset 0 0 0 1px rgba(74, 154, 158, 0.08);
+      overflow: hidden;
+    }
+    .loading-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #b8eff1);
+      transition: width 0.2s ease;
+    }
+    .hint {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      box-shadow: 0 14px 34px rgba(60, 134, 140, 0.12);
+      backdrop-filter: blur(10px);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink);
+      z-index: 2;
+      white-space: nowrap;
+    }
   </style>
+  <script async src="https://unpkg.com/es-module-shims@1.10.0/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 <body>
-  <div id="loading">
-    <div id="bar-wrap"><div id="bar"></div></div>
-    <div id="pct">Loading…</div>
+  <div id="wrap">
+    <div class="loading" id="loading">
+      <div class="loading-card">
+        <p class="loading-label">Loading 3D Viewer</p>
+        <div class="loading-bar">
+          <div class="loading-fill" id="loading-fill"></div>
+        </div>
+      </div>
+    </div>
+    <div class="hint">drag to rotate</div>
   </div>
-  <div id="hint">Drag to rotate · Scroll to zoom</div>
-
-  <script type="importmap">
-  { "imports": {
-      "three": "https://unpkg.com/three@0.164.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.164.0/examples/jsm/"
-  }}
-  </script>
 
   <script type="module">
-    import * as THREE        from 'three';
+    import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    renderer.setSize(innerWidth, innerHeight);
+    const MODEL_URL = 'https://wearenextgen.github.io/b2h-viewer/multivitamin_final.glb';
+    const LABEL_URL = 'https://wearenextgen.github.io/b2h-viewer/multivitamin-label.png';
+
+    const wrap = document.getElementById('wrap');
+    const loading = document.getElementById('loading');
+    const loadingFill = document.getElementById('loading-fill');
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
-    document.body.appendChild(renderer.domElement);
+    wrap.prepend(renderer.domElement);
 
-    const scene  = new THREE.Scene();
-    scene.background = new THREE.Color(0xffffff);
-    const camera = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, 0.001, 1000);
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(34, wrap.clientWidth / wrap.clientHeight, 0.1, 100);
+    camera.position.set(0, 0.1, 5.4);
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping   = true;
-    controls.dampingFactor   = 0.07;
-    controls.autoRotate      = true;
-    controls.autoRotateSpeed = 1.35;
-    controls.minPolarAngle   = Math.PI * 0.18;
-    controls.maxPolarAngle   = Math.PI * 0.78;
-    renderer.domElement.addEventListener('pointerdown', () => controls.autoRotate = false);
+    controls.enablePan = false;
+    controls.enableZoom = false;
+    controls.enableDamping = true;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1.2;
+    controls.minPolarAngle = Math.PI / 2 - 0.45;
+    controls.maxPolarAngle = Math.PI / 2 + 0.45;
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.85));
-    const key = new THREE.DirectionalLight(0xf7fffe, 1.15);
-    key.position.set(2.2, 4.2, 3.2);
+    scene.add(new THREE.AmbientLight(0xffffff, 1.8));
+
+    const key = new THREE.DirectionalLight(0xffffff, 2.35);
+    key.position.set(3.2, 4.6, 5.5);
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0xe4fffb, 0.75);
-    fill.position.set(-3, 2, -2);
-    scene.add(fill);
-    const back = new THREE.DirectionalLight(0xffffff, 0.35);
-    back.position.set(0, 1, -4);
-    scene.add(back);
 
-    // Label texture
-    const labelTex = new THREE.TextureLoader().load('multivitamin-label.png');
-    labelTex.colorSpace = THREE.SRGBColorSpace;
-    labelTex.anisotropy = 16;
+    const fill = new THREE.DirectionalLight(0xe2ffff, 1.55);
+    fill.position.set(-4.5, 1.6, 3.2);
+    scene.add(fill);
+
+    const rim = new THREE.PointLight(0xa4eff1, 18, 20, 2);
+    rim.position.set(0, 1.7, 2.8);
+    scene.add(rim);
+
+    const pedestal = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.72, 1.86, 0.2, 80),
+      new THREE.MeshPhysicalMaterial({
+        color: 0xffffff,
+        roughness: 0.16,
+        metalness: 0.02,
+        transmission: 0.12,
+        transparent: true,
+        opacity: 0.92,
+        clearcoat: 1
+      })
+    );
+    pedestal.position.set(0, -2.02, 0);
+    scene.add(pedestal);
+
+    const shadow = new THREE.Mesh(
+      new THREE.CircleGeometry(1.95, 80),
+      new THREE.MeshBasicMaterial({ color: 0xbfe7e8, transparent: true, opacity: 0.22 })
+    );
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.position.set(0, -2.11, 0);
+    scene.add(shadow);
+
+    const bottleMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xf5f6f4,
+      roughness: 0.46,
+      metalness: 0.0,
+      clearcoat: 0.5,
+      clearcoatRoughness: 0.22
+    });
+
+    const textureLoader = new THREE.TextureLoader();
+    const labelTexture = textureLoader.load(LABEL_URL);
+    labelTexture.colorSpace = THREE.SRGBColorSpace;
+    labelTexture.wrapS = THREE.ClampToEdgeWrapping;
+    labelTexture.wrapT = THREE.ClampToEdgeWrapping;
+    labelTexture.flipY = false;
+
+    const group = new THREE.Group();
+    scene.add(group);
 
     new GLTFLoader().load(
-      'multivitamin_final.glb',
+      MODEL_URL,
       (gltf) => {
         const model = gltf.scene;
 
-        const box = new THREE.Box3().setFromObject(model);
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
+        model.traverse((child) => {
+          if (!child.isMesh) return;
+          child.material = bottleMaterial;
+          child.castShadow = false;
+          child.receiveShadow = false;
+        });
+
+        const localBox = new THREE.Box3().setFromObject(model);
+        const center = localBox.getCenter(new THREE.Vector3());
+        const size = localBox.getSize(new THREE.Vector3());
         model.position.sub(center);
 
         const maxDim = Math.max(size.x, size.y, size.z);
-        camera.position.set(0, 0, maxDim * 1.95);
-        controls.target.set(0, 0, 0);
-        controls.minDistance = maxDim * 0.72;
-        controls.maxDistance = maxDim * 6;
+        const fitHeight = size.y * 0.5;
+        camera.position.set(maxDim * 0.04, fitHeight * 0.04, maxDim * 3.45);
+        camera.lookAt(0, fitHeight * 0.03, 0);
+        controls.target.set(0, fitHeight * 0.05, 0);
         controls.update();
 
-        // Plain white bottle — label cylinder sits on top
-        model.traverse(child => {
-          if (!child.isMesh) return;
-          child.material = new THREE.MeshStandardMaterial({
-            color: 0xf2f0ec,
-            roughness: 0.45,
+        group.add(model);
+
+        const worldBox = new THREE.Box3().setFromObject(model);
+        const worldSize = worldBox.getSize(new THREE.Vector3());
+
+        const yMin = worldBox.min.y + worldSize.y * 0.07;
+        const yMax = worldBox.min.y + worldSize.y * 0.7;
+        const labelHeight = yMax - yMin;
+        const labelCenterY = (yMin + yMax) / 2;
+        const radius = Math.max(worldSize.x, worldSize.z) / 2 * 1.018;
+
+        const label = new THREE.Mesh(
+          new THREE.CylinderGeometry(radius, radius, labelHeight, 128, 1, true),
+          new THREE.MeshStandardMaterial({
+            map: labelTexture,
+            transparent: true,
+            roughness: 0.3,
             metalness: 0.0,
-          });
-        });
-        scene.add(model);
+            side: THREE.FrontSide
+          })
+        );
+        label.position.set(0, labelCenterY, 0);
+        label.rotation.y = Math.PI / 2;
+        group.add(label);
 
-        // World bounding box after centring
-        const wb    = new THREE.Box3().setFromObject(model);
-        const wSize = wb.getSize(new THREE.Vector3());
-
-        // Label band: bottom 7% → top 70% of bottle height
-        const yMin     = wb.min.y + wSize.y * 0.07;
-        const yMax     = wb.min.y + wSize.y * 0.70;
-        const lHeight  = yMax - yMin;
-        const lCenterY = (yMin + yMax) / 2;
-
-        const radius = Math.max(wSize.x, wSize.z) / 2 * 1.018;
-
-        const geo = new THREE.CylinderGeometry(radius, radius, lHeight, 128, 1, true);
-        const mat = new THREE.MeshStandardMaterial({
-          map:       labelTex,
-          roughness: 0.3,
-          metalness: 0.0,
-          side:      THREE.FrontSide,
-        });
-        const labelCyl = new THREE.Mesh(geo, mat);
-        labelCyl.position.y = lCenterY;
-        labelCyl.rotation.y  = Math.PI / 2;
-        scene.add(labelCyl);
-
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('hint').style.display    = 'block';
+        loading.classList.add('is-hidden');
       },
-      (xhr) => {
-        if (xhr.total) {
-          const p = Math.round(xhr.loaded / xhr.total * 100);
-          document.getElementById('bar').style.width = p + '%';
-          document.getElementById('pct').textContent = 'Loading… ' + p + '%';
-        }
+      (event) => {
+        if (!event.total) return;
+        loadingFill.style.width = `${(event.loaded / event.total) * 100}%`;
       },
-      (err) => {
-        console.error(err);
-        document.getElementById('pct').textContent = 'Error — check console';
+      () => {
+        loading.classList.add('is-hidden');
       }
     );
 
-    window.addEventListener('resize', () => {
-      camera.aspect = innerWidth / innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(innerWidth, innerHeight);
-    });
+    const clock = new THREE.Clock();
 
-    (function animate() {
+    function animate() {
       requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+      group.position.y = Math.sin(t * 1.15) * 0.045;
+      group.rotation.z = Math.sin(t * 0.55) * 0.018;
       controls.update();
       renderer.render(scene, camera);
-    })();
+    }
+
+    animate();
+
+    addEventListener('resize', () => {
+      camera.aspect = wrap.clientWidth / wrap.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+    });
   </script>
 </body>
 </html>
