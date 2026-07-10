@@ -178,7 +178,7 @@
     labelTexture.colorSpace = THREE.SRGBColorSpace;
     labelTexture.wrapS = THREE.ClampToEdgeWrapping;
     labelTexture.wrapT = THREE.ClampToEdgeWrapping;
-    labelTexture.flipY = false;
+    labelTexture.flipY = true;
 
     const group = new THREE.Group();
     scene.add(group);
@@ -212,8 +212,8 @@
         const worldBox = new THREE.Box3().setFromObject(model);
         const worldSize = worldBox.getSize(new THREE.Vector3());
 
-        const yMin = worldBox.min.y + worldSize.y * 0.05;
-        const yMax = worldBox.min.y + worldSize.y * 0.58;
+        const yMin = worldBox.min.y + worldSize.y * 0.015;
+        const yMax = worldBox.min.y + worldSize.y * 0.53;
         const labelHeight = yMax - yMin;
         const labelCenterY = (yMin + yMax) / 2;
         const radius = Math.max(worldSize.x, worldSize.z) / 2 * 1.018;
