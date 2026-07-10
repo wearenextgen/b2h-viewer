@@ -77,7 +77,7 @@
     scene.add(back);
 
     // Label texture — CylinderGeometry has perfect built-in UV wrapping
-    const labelTex = new THREE.TextureLoader().load('back2balance-label.png?v=20260710d');
+    const labelTex = new THREE.TextureLoader().load('back2balance-label.png?v=20260710e');
     labelTex.colorSpace = THREE.SRGBColorSpace;
     labelTex.anisotropy = 16;
     labelTex.center.set(0.5, 0.5);
@@ -93,7 +93,7 @@
     gltfLoader.setDRACOLoader(dracoLoader);
 
     gltfLoader.load(
-      'back2balance.glb?v=20260710d',
+      'back2balance.glb?v=20260710e',
       (gltf) => {
         const model = gltf.scene;
 
@@ -134,7 +134,7 @@
         const lCenterY = (yMin + yMax) / 2;
 
         // Radius: enough clearance to avoid z-fighting with the bottle surface
-        const radius = Math.max(wSize.x, wSize.z) / 2 * 1.018;
+        const radius = Math.max(wSize.x, wSize.z) / 2 * 1.006;
 
         // Open-ended cylinder — Three.js UV: u wraps 0→1 around circumference,
         // v goes 1 at top → 0 at bottom (so flipY=true makes label right-side up)
