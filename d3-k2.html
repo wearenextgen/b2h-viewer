@@ -113,17 +113,28 @@
         const wSize = wb.getSize(new THREE.Vector3());
 
         // Label band: tune these two numbers to reposition the label
-        const yMin   = wb.min.y + wSize.y * 0.04;  // bottom of label
-        const yMax   = wb.min.y + wSize.y * 0.64;  // top of label
+        const yMin   = wb.min.y + wSize.y * 0.085;  // bottom of label
+        const yMax   = wb.min.y + wSize.y * 0.605;  // top of label
         const lHeight = yMax - yMin;
         const lCenterY = (yMin + yMax) / 2;
 
         // Radius: enough clearance to avoid z-fighting with the bottle surface
         const radius = Math.max(wSize.x, wSize.z) / 2 * 1.018;
+        const labelAspect = 835 / 378;
+        const thetaLength = Math.min((labelAspect * lHeight) / radius, Math.PI * 2 * 0.9);
 
-        // Open-ended cylinder — Three.js UV: u wraps 0→1 around circumference,
-        // v goes 1 at top → 0 at bottom (so flipY=true makes label right-side up)
-        const geo = new THREE.CylinderGeometry(radius, radius, lHeight, 128, 1, true);
+        // Partial wrap keeps the original label proportions instead of stretching
+        // it across the full circumference of the bottle.
+        const geo = new THREE.CylinderGeometry(
+          radius,
+          radius,
+          lHeight,
+          128,
+          1,
+          true,
+          -thetaLength / 2,
+          thetaLength
+        );
         const mat = new THREE.MeshStandardMaterial({
           map:       labelTex,
           roughness: 0.3,
