@@ -40,6 +40,7 @@
     import * as THREE        from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
+    import { DRACOLoader }   from 'three/addons/loaders/DRACOLoader.js';
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -74,12 +75,18 @@
     scene.add(back);
 
     // Label texture — CylinderGeometry has perfect built-in UV wrapping
-    const labelTex = new THREE.TextureLoader().load('d3-k2-label.png');
+    const labelTex = new THREE.TextureLoader().load('d3-k2-label.png?v=20260710c');
     labelTex.colorSpace = THREE.SRGBColorSpace;
     labelTex.anisotropy = 16;
 
-    new GLTFLoader().load(
-      'd3-k2.glb',
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://unpkg.com/three@0.164.0/examples/jsm/libs/draco/');
+
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setDRACOLoader(dracoLoader);
+
+    gltfLoader.load(
+      'd3-k2.glb?v=20260710c',
       (gltf) => {
         const model = gltf.scene;
 
