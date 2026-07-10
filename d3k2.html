@@ -113,8 +113,8 @@
         const wSize = wb.getSize(new THREE.Vector3());
 
         // Label band: tune these two numbers to reposition the label
-        const yMin   = wb.min.y + wSize.y * 0.015;  // bottom of label
-        const yMax   = wb.min.y + wSize.y * 0.535;  // top of label
+        const yMin   = wb.min.y + wSize.y * 0.005;  // bottom of label
+        const yMax   = wb.min.y + wSize.y * 0.485;  // top of label
         const lHeight = yMax - yMin;
         const lCenterY = (yMin + yMax) / 2;
 
