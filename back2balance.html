@@ -82,6 +82,7 @@
     labelTex.anisotropy = 16;
     labelTex.center.set(0.5, 0.5);
     labelTex.rotation = Math.PI;
+    labelTex.flipY = false;
 
     const root = new THREE.Group();
     scene.add(root);
@@ -128,13 +129,13 @@
         const wSize = wb.getSize(new THREE.Vector3());
 
         // Label band: tune these two numbers to reposition the label
-        const yMin   = wb.min.y + wSize.y * 0.075;  // bottom of label
-        const yMax   = wb.min.y + wSize.y * 0.655;  // top of label
+        const yMin   = wb.min.y + wSize.y * 0.095;  // bottom of label
+        const yMax   = wb.min.y + wSize.y * 0.625;  // top of label
         const lHeight = yMax - yMin;
         const lCenterY = (yMin + yMax) / 2;
 
         // Radius: enough clearance to avoid z-fighting with the bottle surface
-        const radius = Math.max(wSize.x, wSize.z) / 2 * 1.006;
+        const radius = Math.max(wSize.x, wSize.z) / 2 * 0.9998;
 
         // Open-ended cylinder — Three.js UV: u wraps 0→1 around circumference,
         // v goes 1 at top → 0 at bottom (so flipY=true makes label right-side up)
