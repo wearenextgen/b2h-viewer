@@ -83,37 +83,6 @@
       (gltf) => {
         const model = gltf.scene;
 
-        // Plain white bottle — label cylinder sits on top
-        model.traverse(child => {
-          if (!child.isMesh) return;
-          child.material = new THREE.MeshStandardMaterial({
-            color: 0xf2f0ec,
-            roughness: 0.45,
-            metalness: 0.0,
-          });
-        });
-
-        // Stretch the lower bottle body a bit while leaving the cap intact.
-        const preBox = new THREE.Box3().setFromObject(model);
-        const preSize = preBox.getSize(new THREE.Vector3());
-        const minY = preBox.min.y;
-        const bodyTop = minY + preSize.y * 0.62;
-        const stretch = preSize.y * 0.12;
-
-        model.traverse(child => {
-          if (!child.isMesh || !child.geometry?.attributes?.position) return;
-          child.geometry = child.geometry.clone();
-          const pos = child.geometry.attributes.position;
-          for (let i = 0; i < pos.count; i++) {
-            const y = pos.getY(i);
-            if (y >= bodyTop) continue;
-            const t = (bodyTop - y) / (bodyTop - minY);
-            pos.setY(i, y - stretch * Math.pow(t, 0.9));
-          }
-          pos.needsUpdate = true;
-          child.geometry.computeVertexNormals();
-        });
-
         // Centre and measure bottle
         const box    = new THREE.Box3().setFromObject(model);
         const centre = box.getCenter(new THREE.Vector3());
@@ -128,6 +97,15 @@
         controls.maxDistance = maxDim * 6;
         controls.update();
 
+        // Plain white bottle — label cylinder sits on top
+        model.traverse(child => {
+          if (!child.isMesh) return;
+          child.material = new THREE.MeshStandardMaterial({
+            color: 0xf2f0ec,
+            roughness: 0.45,
+            metalness: 0.0,
+          });
+        });
         scene.add(model);
 
         // World bounding box after centring
@@ -135,15 +113,15 @@
         const wSize = wb.getSize(new THREE.Vector3());
 
         // Label band: tune these two numbers to reposition the label
-        const yMin   = wb.min.y + wSize.y * 0.035;  // bottom of label
-        const yMax   = wb.min.y + wSize.y * 0.71;   // top of label
+        const yMin   = wb.min.y + wSize.y * 0.04;  // bottom of label
+        const yMax   = wb.min.y + wSize.y * 0.67;  // top of label
         const lHeight = yMax - yMin;
         const lCenterY = (yMin + yMax) / 2;
 
         // Radius: enough clearance to avoid z-fighting with the bottle surface
         const radius = Math.max(wSize.x, wSize.z) / 2 * 1.018;
         const labelAspect = 1772 / 1417;
-        const thetaLength = Math.min((labelAspect * lHeight) / radius, Math.PI * 2 * 0.92);
+        const thetaLength = Math.min((labelAspect * lHeight) / radius, Math.PI * 2 * 0.86);
 
         // Partial open cylinder so the label can keep its proportions without
         // being stretched to a full 360-degree wrap.
