@@ -53,11 +53,13 @@
     const scene  = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff);
     const camera = new THREE.PerspectiveCamera(36, innerWidth / innerHeight, 0.001, 1000);
+    const params = new URLSearchParams(location.search);
+    const frontView = params.has('front');
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping   = true;
     controls.dampingFactor   = 0.07;
-    controls.autoRotate      = true;
+    controls.autoRotate      = !frontView;
     controls.autoRotateSpeed = 1.5;
     controls.minPolarAngle   = Math.PI * 0.18;
     controls.maxPolarAngle   = Math.PI * 0.75;
