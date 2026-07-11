@@ -94,6 +94,7 @@
       'd3-k2.glb?v=20260711d',
       (gltf) => {
         const model = gltf.scene;
+        model.scale.set(1.05, 1.0, 1.05);
 
         // Centre and measure bottle
         const box    = new THREE.Box3().setFromObject(model);
@@ -128,7 +129,7 @@
         const radius = Math.max(wSize.x, wSize.z) / 2 * 1.003;
         const labelAspect = 782 / 326;
         const lHeight = (Math.PI * 2 * radius) / labelAspect;
-        const yMin = wb.min.y + wSize.y * 0.055;
+        const yMin = wb.min.y + wSize.y * 0.035;
         const lCenterY = yMin + lHeight / 2;
 
         // Keep the label as a separate, tightly wrapped object.
