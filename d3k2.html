@@ -77,9 +77,12 @@
     scene.add(back);
 
     // Label texture — CylinderGeometry has perfect built-in UV wrapping
-    const labelTex = new THREE.TextureLoader().load('d3-k2-label.png?v=20260710c');
+    const labelTex = new THREE.TextureLoader().load('d3-k2-label.png?v=20260711d');
     labelTex.colorSpace = THREE.SRGBColorSpace;
     labelTex.anisotropy = 16;
+    labelTex.center.set(0.5, 0.5);
+    labelTex.rotation = Math.PI;
+    labelTex.flipY = false;
 
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('https://unpkg.com/three@0.164.0/examples/jsm/libs/draco/');
@@ -88,7 +91,7 @@
     gltfLoader.setDRACOLoader(dracoLoader);
 
     gltfLoader.load(
-      'd3-k2.glb?v=20260711b',
+      'd3-k2.glb?v=20260711d',
       (gltf) => {
         const model = gltf.scene;
 
@@ -121,29 +124,15 @@
         const wb   = new THREE.Box3().setFromObject(model);
         const wSize = wb.getSize(new THREE.Vector3());
 
-        // Label band: tune these two numbers to reposition the label
-        const yMin   = wb.min.y + wSize.y * 0.02;  // bottom of label
-        const yMax   = wb.min.y + wSize.y * 0.47;  // top of label
-        const lHeight = yMax - yMin;
-        const lCenterY = (yMin + yMax) / 2;
+        // Match the 100 x 42 mm artwork without changing its proportions.
+        const radius = Math.max(wSize.x, wSize.z) / 2 * 1.003;
+        const labelAspect = 782 / 326;
+        const lHeight = (Math.PI * 2 * radius) / labelAspect;
+        const yMin = wb.min.y + wSize.y * 0.055;
+        const lCenterY = yMin + lHeight / 2;
 
-        // Radius: enough clearance to avoid z-fighting with the bottle surface
-        const radius = Math.max(wSize.x, wSize.z) / 2 * 1.018;
-        const labelAspect = 835 / 378;
-        const thetaLength = Math.min(((labelAspect * lHeight) / radius) * 1.08, Math.PI * 2 * 0.94);
-
-        // Partial wrap keeps the original label proportions instead of stretching
-        // it across the full circumference of the bottle.
-        const geo = new THREE.CylinderGeometry(
-          radius,
-          radius,
-          lHeight,
-          128,
-          1,
-          true,
-          -thetaLength / 2,
-          thetaLength
-        );
+        // Keep the label as a separate, tightly wrapped object.
+        const geo = new THREE.CylinderGeometry(radius, radius, lHeight, 128, 1, true);
         const mat = new THREE.MeshStandardMaterial({
           map:       labelTex,
           roughness: 0.3,
@@ -152,7 +141,8 @@
         });
         const labelCyl = new THREE.Mesh(geo, mat);
         labelCyl.position.y = lCenterY;
-        labelCyl.rotation.y  = Math.PI * 1.5;   // keep the open seam on the back
+        labelCyl.rotation.y  = Math.PI / 2 - 1.37;
+        labelCyl.scale.z = -1;
         scene.add(labelCyl);
 
         document.getElementById('loading').style.display = 'none';
