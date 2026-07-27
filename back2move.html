@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B2H BACK2MOVE — 360° Viewer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { overflow: hidden; background: #fff; }
+    canvas { display: block; }
+    #hint {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      display: none;
+      transform: translateX(-50%);
+      color: #aaa;
+      font: 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0.06em;
+      pointer-events: none;
+    }
+    #loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    #bar-wrap { width: 200px; height: 3px; overflow: hidden; border-radius: 2px; background: #eee; }
+    #bar { width: 0; height: 100%; border-radius: 2px; background: #999; transition: width 0.2s; }
+    #pct { color: #aaa; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div id="bar-wrap"><div id="bar"></div></div>
+    <div id="pct">Loading…</div>
+  </div>
+  <div id="hint">Drag to rotate · Scroll to zoom</div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.164.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.164.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+    import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+    import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.12;
+    document.body.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xffffff);
+
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+    pmrem.dispose();
+
+    const camera = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, 0.001, 1000);
+    const params = new URLSearchParams(location.search);
+    const frontView = params.has("front");
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.07;
+    controls.autoRotate = !frontView;
+    controls.autoRotateSpeed = 1.3;
+    controls.minPolarAngle = Math.PI * 0.18;
+    controls.maxPolarAngle = Math.PI * 0.78;
+    renderer.domElement.addEventListener("pointerdown", () => {
+      controls.autoRotate = false;
+    });
+
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xc8c8c8, 1.5));
+    const key = new THREE.DirectionalLight(0xfffbf7, 2.1);
+    key.position.set(3, 5, 4);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xe8efff, 1.0);
+    fill.position.set(-4, 2, 2);
+    scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xffffff, 1.2);
+    rim.position.set(0, 3, -5);
+    scene.add(rim);
+
+    const labelTexture = new THREE.TextureLoader().load("back2move-label.png?v=20260727b");
+    labelTexture.colorSpace = THREE.SRGBColorSpace;
+    labelTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    labelTexture.wrapS = THREE.RepeatWrapping;
+    labelTexture.center.set(0.5, 0.5);
+    labelTexture.rotation = Math.PI;
+    labelTexture.offset.x = params.has("labelOffset")
+      ? Number(params.get("labelOffset"))
+      : 0;
+    labelTexture.flipY = false;
+
+    const root = new THREE.Group();
+    scene.add(root);
+
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath("https://unpkg.com/three@0.164.0/examples/jsm/libs/draco/");
+    const loader = new GLTFLoader();
+    loader.setDRACOLoader(dracoLoader);
+
+    loader.load(
+      "back2move.glb?v=20260727b",
+      (gltf) => {
+        const model = gltf.scene;
+        const bounds = new THREE.Box3().setFromObject(model);
+        const centre = bounds.getCenter(new THREE.Vector3());
+        const size = bounds.getSize(new THREE.Vector3());
+        model.position.sub(centre);
+
+        model.traverse((child) => {
+          if (!child.isMesh) return;
+          child.castShadow = true;
+          child.receiveShadow = true;
+          if (child.material?.name === "Back2Move_MatteWhite") {
+            child.material.color.setHex(0xf2f1ee);
+            child.material.roughness = 0.46;
+            child.material.metalness = 0;
+          }
+          if (child.material?.name === "Back2Move_BrushedSilver") {
+            child.material.color.setHex(0xaeb2b7);
+            child.material.roughness = 0.25;
+            child.material.metalness = 0.92;
+          }
+        });
+        root.add(model);
+
+        const worldBounds = new THREE.Box3().setFromObject(model);
+        const worldSize = worldBounds.getSize(new THREE.Vector3());
+
+        // The label remains an independent wrap mesh, matching the other B2H viewers.
+        const labelRadiusScale = params.has("labelRadius")
+          ? Number(params.get("labelRadius"))
+          : 0.515;
+        const radiusX = worldSize.x * labelRadiusScale;
+        const radiusZ = worldSize.z * labelRadiusScale;
+        const ellipseCircumference = Math.PI * (
+          3 * (radiusX + radiusZ)
+          - Math.sqrt((3 * radiusX + radiusZ) * (radiusX + 3 * radiusZ))
+        );
+        const labelArtworkAspect = 1985 / 745;
+        const labelHeight = ellipseCircumference / labelArtworkAspect;
+        const labelBottom = worldBounds.min.y + worldSize.y * 0.095;
+        const labelCenterY = labelBottom + labelHeight / 2;
+
+        const labelGeometry = new THREE.CylinderGeometry(1, 1, labelHeight, 160, 1, true);
+        const labelMaterial = new THREE.MeshStandardMaterial({
+          map: labelTexture,
+          roughness: 0.34,
+          metalness: 0,
+          side: THREE.FrontSide,
+        });
+        const label = new THREE.Mesh(labelGeometry, labelMaterial);
+        label.name = "Back2Move_Label";
+        label.position.y = labelCenterY;
+        label.rotation.y = 0;
+        label.scale.set(radiusX, 1, -radiusZ);
+        root.add(label);
+
+        const maxDimension = Math.max(size.x, size.y, size.z);
+        camera.position.set(0, 0, maxDimension * 1.9);
+        controls.target.set(0, 0, 0);
+        controls.minDistance = maxDimension * 0.7;
+        controls.maxDistance = maxDimension * 6;
+        controls.update();
+
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("hint").style.display = "block";
+      },
+      (event) => {
+        if (!event.total) return;
+        const progress = Math.round((event.loaded / event.total) * 100);
+        document.getElementById("bar").style.width = `${progress}%`;
+        document.getElementById("pct").textContent = `Loading… ${progress}%`;
+      },
+      (error) => {
+        console.error(error);
+        document.getElementById("pct").textContent = "Error — check console";
+      },
+    );
+
+    addEventListener("resize", () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
