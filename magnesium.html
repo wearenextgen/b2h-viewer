@@ -117,7 +117,7 @@
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
     const MODEL_URL = 'https://wearenextgen.github.io/b2h-viewer/magnesium_final.glb';
-    const LABEL_URL = 'https://wearenextgen.github.io/b2h-viewer/magnesium-label.png';
+    const LABEL_URL = './magnesium-label.png?v=20260727d';
 
     const wrap = document.getElementById('wrap');
     const loading = document.getElementById('loading');
@@ -229,17 +229,18 @@
         const worldBox = new THREE.Box3().setFromObject(model);
         const worldSize = worldBox.getSize(new THREE.Vector3());
 
-        const yMin = worldBox.min.y + worldSize.y * 0.07;
-        const yMax = worldBox.min.y + worldSize.y * 0.7;
-        const labelHeight = yMax - yMin;
-        const labelCenterY = (yMin + yMax) / 2;
         const radius = Math.max(worldSize.x, worldSize.z) / 2 * 1.018;
+        const labelAspect = 142 / 53;
+        const labelHeight = (Math.PI * 2 * radius) / labelAspect;
+        const yMin = worldBox.min.y + worldSize.y * 0.07;
+        const labelCenterY = yMin + labelHeight / 2;
 
         const label = new THREE.Mesh(
           new THREE.CylinderGeometry(radius, radius, labelHeight, 128, 1, true),
           new THREE.MeshStandardMaterial({
             map: labelTexture,
             transparent: true,
+            alphaTest: 0.02,
             roughness: 0.3,
             metalness: 0.0,
             side: THREE.FrontSide

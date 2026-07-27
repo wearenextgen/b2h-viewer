@@ -74,7 +74,7 @@
     scene.add(back);
 
     // Label texture — CylinderGeometry has perfect built-in UV wrapping
-    const labelTex = new THREE.TextureLoader().load('label.png');
+    const labelTex = new THREE.TextureLoader().load('label.png?v=20260727d');
     labelTex.colorSpace = THREE.SRGBColorSpace;
     labelTex.anisotropy = 16;
 
@@ -112,20 +112,20 @@
         const wb   = new THREE.Box3().setFromObject(model);
         const wSize = wb.getSize(new THREE.Vector3());
 
-        // Label band: tune these two numbers to reposition the label
-        const yMin   = wb.min.y + wSize.y * 0.07;  // bottom of label
-        const yMax   = wb.min.y + wSize.y * 0.70;  // top of label
-        const lHeight = yMax - yMin;
-        const lCenterY = (yMin + yMax) / 2;
-
         // Radius: enough clearance to avoid z-fighting with the bottle surface
         const radius = Math.max(wSize.x, wSize.z) / 2 * 1.018;
+        const labelAspect = 142 / 53;
+        const lHeight = (Math.PI * 2 * radius) / labelAspect;
+        const yMin = wb.min.y + wSize.y * 0.07;
+        const lCenterY = yMin + lHeight / 2;
 
         // Open-ended cylinder — Three.js UV: u wraps 0→1 around circumference,
         // v goes 1 at top → 0 at bottom (so flipY=true makes label right-side up)
         const geo = new THREE.CylinderGeometry(radius, radius, lHeight, 128, 1, true);
         const mat = new THREE.MeshStandardMaterial({
           map:       labelTex,
+          transparent: true,
+          alphaTest: 0.02,
           roughness: 0.3,
           metalness: 0.0,
           side:      THREE.FrontSide,

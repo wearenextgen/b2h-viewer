@@ -77,7 +77,7 @@
     scene.add(back);
 
     // Label texture — CylinderGeometry has perfect built-in UV wrapping
-    const labelTex = new THREE.TextureLoader().load('back2balance-label.png?v=20260710e');
+    const labelTex = new THREE.TextureLoader().load('back2balance-label.png?v=20260727d');
     labelTex.colorSpace = THREE.SRGBColorSpace;
     labelTex.anisotropy = 16;
     labelTex.center.set(0.5, 0.5);
@@ -142,6 +142,8 @@
         const geo = new THREE.CylinderGeometry(radius, radius, lHeight, 128, 1, true);
         const mat = new THREE.MeshStandardMaterial({
           map:       labelTex,
+          transparent: true,
+          alphaTest: 0.02,
           roughness: 0.3,
           metalness: 0.0,
           side:      THREE.FrontSide,

@@ -99,7 +99,7 @@
     rim.position.set(0, 3, -5);
     scene.add(rim);
 
-    const labelTexture = new THREE.TextureLoader().load("back2move-label.png?v=20260727c");
+    const labelTexture = new THREE.TextureLoader().load("back2move-label.png?v=20260727d");
     labelTexture.colorSpace = THREE.SRGBColorSpace;
     labelTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
     labelTexture.wrapS = THREE.RepeatWrapping;
@@ -157,7 +157,8 @@
           3 * (radiusX + radiusZ)
           - Math.sqrt((3 * radiusX + radiusZ) * (radiusX + 3 * radiusZ))
         );
-        const labelArtworkAspect = 1985 / 745;
+        // Use the 163 x 58 mm finished cut size, excluding bleed and dieline.
+        const labelArtworkAspect = 163 / 58;
         const labelHeight = ellipseCircumference / labelArtworkAspect;
         const labelBottom = worldBounds.min.y + worldSize.y * 0.095;
         const labelCenterY = labelBottom + labelHeight / 2;
@@ -165,6 +166,8 @@
         const labelGeometry = new THREE.CylinderGeometry(1, 1, labelHeight, 160, 1, true);
         const labelMaterial = new THREE.MeshStandardMaterial({
           map: labelTexture,
+          transparent: true,
+          alphaTest: 0.02,
           roughness: 0.34,
           metalness: 0,
           side: THREE.FrontSide,
