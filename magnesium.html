@@ -136,7 +136,7 @@
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
-    controls.enableZoom = false;
+    controls.enableZoom = true;
     controls.enableDamping = true;
     controls.autoRotate = true;
     controls.autoRotateSpeed = 1.2;
@@ -222,6 +222,8 @@
         camera.position.set(maxDim * 0.04, fitHeight * 0.04, maxDim * 3.45);
         camera.lookAt(0, fitHeight * 0.03, 0);
         controls.target.set(0, fitHeight * 0.05, 0);
+        controls.minDistance = maxDim * 1.2;
+        controls.maxDistance = maxDim * 6;
         controls.update();
 
         group.add(model);
