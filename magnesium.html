@@ -193,9 +193,9 @@
     labelTexture.colorSpace = THREE.SRGBColorSpace;
     labelTexture.wrapS = THREE.ClampToEdgeWrapping;
     labelTexture.wrapT = THREE.ClampToEdgeWrapping;
-    labelTexture.flipY = false;
+    labelTexture.flipY = true;
     labelTexture.center.set(0.5, 0.5);
-    labelTexture.rotation = Math.PI;
+    labelTexture.rotation = 0;
 
     const group = new THREE.Group();
     scene.add(group);
