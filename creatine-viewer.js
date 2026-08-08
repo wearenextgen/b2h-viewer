@@ -31,7 +31,7 @@ const fill = new THREE.DirectionalLight(0xd8efff, 0.72); fill.position.set(-4, 2
 const rim = new THREE.DirectionalLight(0x8eeeff, 0.92); rim.position.set(2, 1, -4); scene.add(rim);
 
 const loader = new GLTFLoader();
-loader.load('./creatine-300g.glb', (gltf) => {
+loader.load('./creatine-300g.glb?v=20260808-stable2', (gltf) => {
   const model = gltf.scene;
   const maxAnisotropy = Math.min(16, renderer.capabilities.getMaxAnisotropy());
   model.traverse((node) => {
