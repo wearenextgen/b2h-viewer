@@ -13,7 +13,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(wrap.clientWidth, wrap.clientHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = 0.92;
 wrap.prepend(renderer.domElement);
 
 const scene = new THREE.Scene();
@@ -30,14 +30,14 @@ controls.maxDistance = 4.2;
 controls.minPolarAngle = Math.PI / 2 - 0.52;
 controls.maxPolarAngle = Math.PI / 2 + 0.52;
 
-scene.add(new THREE.HemisphereLight(0xffffff, 0x4b5058, 2.6));
-const key = new THREE.DirectionalLight(0xffffff, 4.2);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x20242d, 1.2));
+const key = new THREE.DirectionalLight(0xfffdf9, 2.15);
 key.position.set(3.4, 4.8, 5.4);
 scene.add(key);
-const fill = new THREE.DirectionalLight(0xd8efff, 2.4);
+const fill = new THREE.DirectionalLight(0xd8efff, 0.78);
 fill.position.set(-4, 1.4, 3.2);
 scene.add(fill);
-const rim = new THREE.DirectionalLight(0xffe7bd, 2.1);
+const rim = new THREE.DirectionalLight(0xffe7bd, 0.95);
 rim.position.set(2.2, 1.2, -4.5);
 scene.add(rim);
 
@@ -50,6 +50,7 @@ labelTexture.colorSpace = THREE.SRGBColorSpace;
 labelTexture.wrapS = THREE.ClampToEdgeWrapping;
 labelTexture.wrapT = THREE.ClampToEdgeWrapping;
 labelTexture.flipY = true;
+labelTexture.anisotropy = Math.min(16, renderer.capabilities.getMaxAnisotropy());
 
 const draco = new DRACOLoader();
 draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
@@ -64,10 +65,10 @@ loader.load(
       if (!node.isMesh) return;
       node.material = new THREE.MeshPhysicalMaterial({
         color: 0x08090b,
-        roughness: 0.19,
+        roughness: 0.42,
         metalness: 0.0,
-        clearcoat: 1.0,
-        clearcoatRoughness: 0.12
+        clearcoat: 0.24,
+        clearcoatRoughness: 0.32
       });
     });
 
@@ -87,8 +88,8 @@ loader.load(
         map: labelTexture,
         transparent: true,
         alphaTest: 0.015,
-        roughness: 0.29,
-        clearcoat: 0.3,
+        roughness: 0.5,
+        clearcoat: 0.08,
         side: THREE.FrontSide
       })
     );

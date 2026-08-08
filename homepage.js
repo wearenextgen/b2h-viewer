@@ -2,7 +2,12 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
-const assetUrl = (path) => new URL(path, import.meta.url).href;
+const ASSET_VERSION = '20260808-studio4';
+const assetUrl = (path) => {
+  const url = new URL(path, import.meta.url);
+  url.searchParams.set('v', ASSET_VERSION);
+  return url.href;
+};
 
 const products = [
   {
@@ -138,15 +143,15 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 1.8));
 renderer.setSize(innerWidth, innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.08;
+renderer.toneMappingExposure = .92;
 renderer.setClearColor(0x000000, 0);
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(33, innerWidth / innerHeight, .01, 100);
-scene.add(new THREE.HemisphereLight(0xffffff, 0x4d5262, 2.7));
-const key = new THREE.DirectionalLight(0xffffff, 4.4); key.position.set(3.8, 4.8, 5.5); scene.add(key);
-const fill = new THREE.DirectionalLight(0xcfeeff, 2.25); fill.position.set(-4.2, 1.6, 3.5); scene.add(fill);
-const rim = new THREE.DirectionalLight(0xffe3bd, 2.15); rim.position.set(2.2, 1.0, -4.7); scene.add(rim);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x20242d, 1.25));
+const key = new THREE.DirectionalLight(0xfffdf9, 2.25); key.position.set(3.8, 4.8, 5.5); scene.add(key);
+const fill = new THREE.DirectionalLight(0xd7edff, .82); fill.position.set(-4.2, 1.6, 3.5); scene.add(fill);
+const rim = new THREE.DirectionalLight(0xffe7c4, .98); rim.position.set(2.2, 1.0, -4.7); scene.add(rim);
 
 const draco = new DRACOLoader();
 draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/');
@@ -154,7 +159,33 @@ const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(draco);
 const textureLoader = new THREE.TextureLoader();
 
-const loadModel = (url) => new Promise((resolve, reject) => gltfLoader.load(assetUrl(url), g => resolve(g.scene), undefined, reject));
+const tuneImportedModel = (model) => {
+  const maxAnisotropy = Math.min(16, renderer.capabilities.getMaxAnisotropy());
+  model.traverse(node => {
+    if (!node.isMesh || !node.material) return;
+    const materials = Array.isArray(node.material) ? node.material : [node.material];
+    materials.forEach(material => {
+      ['map', 'emissiveMap', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap'].forEach(key => {
+        const map = material[key];
+        if (!map) return;
+        map.anisotropy = maxAnisotropy;
+        if (key === 'map' || key === 'emissiveMap') map.colorSpace = THREE.SRGBColorSpace;
+        map.needsUpdate = true;
+      });
+      if (/Exact_Creatine|Packaging/i.test(material.name)) {
+        material.roughness = Math.max(material.roughness ?? 0, .5);
+        material.metalness = 0;
+        material.envMapIntensity = .58;
+      } else if (/Unprinted_Matte_Black/i.test(material.name)) {
+        material.roughness = Math.max(material.roughness ?? 0, .48);
+        material.envMapIntensity = .5;
+      }
+      material.needsUpdate = true;
+    });
+  });
+  return model;
+};
+const loadModel = (url) => new Promise((resolve, reject) => gltfLoader.load(assetUrl(url), g => resolve(tuneImportedModel(g.scene)), undefined, reject));
 const loadTexture = async (url, flipY = true, rotation = 0) => {
   const texture = await textureLoader.loadAsync(assetUrl(url));
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -167,7 +198,7 @@ const loadTexture = async (url, flipY = true, rotation = 0) => {
   return texture;
 };
 
-const whiteMaterial = () => new THREE.MeshStandardMaterial({ color: 0xf2f1ed, roughness: .44, metalness: 0 });
+const whiteMaterial = () => new THREE.MeshStandardMaterial({ color: 0xeae9e5, roughness: .5, metalness: 0 });
 const centerObject = (object) => {
   const box = new THREE.Box3().setFromObject(object);
   object.position.sub(box.getCenter(new THREE.Vector3()));
@@ -183,7 +214,7 @@ async function buildBottle(p) {
   const radius = Math.max(size.x, size.z) / 2 * p.radius;
   const labelHeight = Math.PI * 2 * radius / p.labelAspect;
   const geometry = new THREE.CylinderGeometry(radius, radius, labelHeight, 160, 1, true);
-  const material = new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .29, side: THREE.FrontSide });
+  const material = new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .5, side: THREE.FrontSide });
   const label = new THREE.Mesh(geometry, material);
   label.position.y = wb.min.y + size.y * p.yStart + labelHeight / 2;
   label.rotation.y = p.seam;
@@ -202,7 +233,7 @@ async function buildSpray(p) {
   const labelHeight = Math.PI * 2 * radius / (782 / 326);
   const label = new THREE.Mesh(
     new THREE.CylinderGeometry(radius, radius, labelHeight, 160, 1, true),
-    new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .3, side: THREE.FrontSide })
+    new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .5, side: THREE.FrontSide })
   );
   label.position.y = wb.min.y + size.y * .035 + labelHeight / 2;
   label.rotation.y = Math.PI / 2 - 1.37;
@@ -223,7 +254,7 @@ async function buildBalance(p) {
   const radius = Math.max(size.x, size.z) / 2 * .9998;
   const label = new THREE.Mesh(
     new THREE.CylinderGeometry(radius, radius, labelHeight, 160, 1, true),
-    new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .3, side: THREE.FrontSide })
+    new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .5, side: THREE.FrontSide })
   );
   label.position.y = (yMin + yMax) / 2;
   label.rotation.y = Math.PI / 2;
@@ -249,7 +280,7 @@ async function buildMove(p) {
   const labelHeight = circumference / (163 / 58);
   const label = new THREE.Mesh(
     new THREE.CylinderGeometry(1, 1, labelHeight, 160, 1, true),
-    new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .3, side: THREE.FrontSide })
+    new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .5, side: THREE.FrontSide })
   );
   label.scale.set(rx, 1, -rz);
   label.position.y = wb.min.y + size.y * .095 + labelHeight / 2;
@@ -268,7 +299,7 @@ async function buildRelief(p) {
   const labelHeight = Math.PI * 2 * radius / (1726 / 1349);
   const label = new THREE.Mesh(
     new THREE.CylinderGeometry(radius, radius, labelHeight, 160, 1, true),
-    new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .3, side: THREE.FrontSide })
+    new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .5, side: THREE.FrontSide })
   );
   label.position.y = wb.min.y + size.y * .035 + labelHeight / 2;
   label.rotation.y = Math.PI / 2 - 1.28;
@@ -281,7 +312,7 @@ async function buildWhey(p) {
   const model = await loadModel(p.model);
   model.traverse(n => {
     if (!n.isMesh) return;
-    n.material = new THREE.MeshPhysicalMaterial({ color: 0x08090b, roughness: .19, metalness: 0, clearcoat: 1, clearcoatRoughness: .12 });
+    n.material = new THREE.MeshPhysicalMaterial({ color: 0x08090b, roughness: .42, metalness: 0, clearcoat: .24, clearcoatRoughness: .32 });
   });
   const wb = centerObject(model);
   const size = wb.getSize(new THREE.Vector3());
@@ -290,7 +321,7 @@ async function buildWhey(p) {
   const labelHeight = Math.PI * 2 * radius / (4096 / 1164);
   const label = new THREE.Mesh(
     new THREE.CylinderGeometry(radius, radius, labelHeight, 160, 1, true),
-    new THREE.MeshPhysicalMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .29, clearcoat: .3, side: THREE.FrontSide })
+    new THREE.MeshPhysicalMaterial({ map: tex, transparent: true, alphaTest: .015, roughness: .5, clearcoat: .08, side: THREE.FrontSide })
   );
   label.position.y = wb.min.y + size.y * .105 + labelHeight / 2;
   label.rotation.y = Math.PI;
@@ -415,17 +446,20 @@ function updateStage(scrollPosition) {
 
   productGroups.forEach(g => { g.visible = false; });
   const current = productGroups[index];
+  const mobile = innerWidth <= 820;
+  const currentBaseX = mobile ? 0 : (products[index].desktopX ?? .82);
   current.visible = true;
   current.rotation.y = (products[index].front ?? Math.PI / 2) + spin * Math.PI * 2 + transition * Math.PI * 1.15;
   current.rotation.z = -transition * .42;
-  current.position.set(-transition * 4.6, innerWidth <= 820 ? 1.35 : .06, 0);
+  current.position.set(currentBaseX - transition * 4.6, mobile ? 1.35 : .06, 0);
   const currentScale = current.userData.baseScale || 1;
   current.scale.setScalar(currentScale * (1 - transition * .16));
 
   if (hasNext && transition > .001) {
     const next = productGroups[index + 1];
+    const nextBaseX = mobile ? 0 : (products[index + 1].desktopX ?? .82);
     next.visible = true;
-    next.position.set((1 - transition) * 4.6, innerWidth <= 820 ? 1.35 : .06, 0);
+    next.position.set(nextBaseX + (1 - transition) * 4.6, mobile ? 1.35 : .06, 0);
     next.rotation.y = (products[index + 1].front ?? Math.PI / 2) - (1 - transition) * Math.PI * 1.15;
     next.rotation.z = (1 - transition) * .42;
     const nextScale = next.userData.baseScale || 1;
@@ -447,9 +481,10 @@ function updateStage(scrollPosition) {
     layer.style.transform = `translate3d(${x}vw,${y}px,0) rotate(${rot}deg)`;
   });
 
-  haloEl.style.transform = `translate(calc(-50% + ${transition * -4.6}vw),-50%) scale(${1 + Math.sin(spin * Math.PI) * .07})`;
+  const desktopVisualOffset = mobile ? 0 : 11;
+  haloEl.style.transform = `translate(calc(-50% + ${desktopVisualOffset - transition * 4.6}vw),-50%) scale(${1 + Math.sin(spin * Math.PI) * .07})`;
   haloEl.style.opacity = products[copyIndex].strongHalo ? .98 : .78;
-  shadowEl.style.transform = `translateX(calc(-50% + ${transition * -4.6}vw)) scaleX(${1 - transition * .22})`;
+  shadowEl.style.transform = `translateX(calc(-50% + ${desktopVisualOffset - transition * 4.6}vw)) scaleX(${1 - transition * .22})`;
   $('scroll-progress').style.transform = `scaleX(${clamp(scrollPosition / max)})`;
 }
 

@@ -43,6 +43,8 @@ Use `opencart-homepage.twig` as the starting template. In a standard OpenCart in
 - There are no pointer handlers on the canvas; the product cannot be manipulated.
 - Backgrounds and product models are loaded only when the current/next slide needs them.
 - Black packages use a stronger product-specific halo and a soft grounding shadow.
+- All models share the same lower-exposure studio rig so labels stay crisp and black packaging does not wash out.
+- Desktop places the rotating product stage to the right of the text column; mobile and tablet recenter it.
 - Pills, droplets, and powder scoops are separate true-alpha assets with their own parallax motion.
 - The bottle-ribbon overlay was intentionally removed. Only the generated product environments remain behind the product.
 
@@ -58,6 +60,7 @@ The launch system uses one persistent announcement—`Η ΝΕΑ ΣΕΙΡΑ ΕΙ�
 - Confirm one full rotation completes before the roll-out portion starts.
 - Confirm no product overlaps the mobile headline or CTA.
 - Confirm dark packages retain visible edge separation from the background.
+- Confirm the Omega-3 ribbed cap remains clean and the Back2Balance cap is fully visible.
 - Confirm all final OpenCart product links before launch.
 - Test on a real iPhone/Safari and Android/Chrome device, not only responsive emulation.
 
