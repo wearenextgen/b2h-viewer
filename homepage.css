@@ -284,25 +284,25 @@ body {
     top: auto;
     left: 22px;
     right: 22px;
-    bottom: max(62px, calc(44px + env(safe-area-inset-bottom)));
+    bottom: max(56px, calc(40px + env(safe-area-inset-bottom)));
     width: auto;
     transform: none;
   }
-  .copy h1 { max-width: 92%; font-size: clamp(38px, 12vw, 64px); }
-  .description { max-width: 85%; margin: 14px 0 18px; font-size: 13px; }
+  .copy h1 { max-width: 94%; font-size: clamp(34px, 10vw, 48px); line-height: .92; }
+  .description { max-width: 100%; margin: 12px 0 16px; font-size: 12px; line-height: 1.45; }
   .cta { min-height: 45px; padding-left: 16px; }
   .cta b { width: 33px; height: 33px; }
   .product-caption { top: 88px; bottom: auto; right: 20px; }
   .scroll-cue { left: auto; right: 22px; bottom: 28px; }
   .scroll-cue span { display: none; }
   .scroll-cue i { width: 54px; }
-  .product-halo { top: 40%; width: min(88vw, 520px); }
-  .product-shadow { top: 63%; width: 46vw; }
-  .effect-set .fx-a { width: 31vw; left: -6%; top: 19%; }
-  .effect-set .fx-b { width: 25vw; right: -4%; top: 15%; }
-  .effect-set .fx-c { width: 28vw; left: 2%; bottom: 26%; }
-  .effect-set .fx-droplets { width: 96vw; right: -38%; top: 11%; }
-  .effect-set .fx-scoop { width: 46vw; right: -9%; bottom: 24%; }
+  .product-halo { top: 35%; width: min(72vw, 440px); }
+  .product-shadow { top: 55%; width: 38vw; }
+  .effect-set .fx-a { width: 24vw; left: -5%; top: 18%; }
+  .effect-set .fx-b { width: 20vw; right: -3%; top: 15%; }
+  .effect-set .fx-c { width: 22vw; left: 3%; bottom: 34%; }
+  .effect-set .fx-droplets { width: 76vw; right: -29%; top: 12%; }
+  .effect-set .fx-scoop { width: 35vw; right: -7%; bottom: 31%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

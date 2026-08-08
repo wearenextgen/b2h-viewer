@@ -364,12 +364,12 @@ let activeCopy = -1;
 
 function layout() {
   const mobile = innerWidth <= 820;
-  segmentPx = innerHeight * (mobile ? 1.16 : 1.28);
+  segmentPx = innerHeight * (mobile ? 1.32 : 1.28);
   showcase.style.height = `${segmentPx * products.length + innerHeight}px`;
   renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.45 : 1.8));
   renderer.setSize(innerWidth, innerHeight, false);
   camera.aspect = innerWidth / innerHeight;
-  camera.position.set(0, mobile ? .32 : .04, mobile ? 9.6 : 6.05);
+  camera.position.set(0, mobile ? .32 : .04, mobile ? 11.8 : 6.05);
   camera.updateProjectionMatrix();
   targetScroll = clamp(scrollY - showcase.offsetTop, 0, segmentPx * products.length);
 }
@@ -418,14 +418,14 @@ function updateStage(scrollPosition) {
   current.visible = true;
   current.rotation.y = (products[index].front ?? Math.PI / 2) + spin * Math.PI * 2 + transition * Math.PI * 1.15;
   current.rotation.z = -transition * .42;
-  current.position.set(-transition * 4.6, innerWidth <= 820 ? 1.12 : .06, 0);
+  current.position.set(-transition * 4.6, innerWidth <= 820 ? 1.35 : .06, 0);
   const currentScale = current.userData.baseScale || 1;
   current.scale.setScalar(currentScale * (1 - transition * .16));
 
   if (hasNext && transition > .001) {
     const next = productGroups[index + 1];
     next.visible = true;
-    next.position.set((1 - transition) * 4.6, innerWidth <= 820 ? 1.12 : .06, 0);
+    next.position.set((1 - transition) * 4.6, innerWidth <= 820 ? 1.35 : .06, 0);
     next.rotation.y = (products[index + 1].front ?? Math.PI / 2) - (1 - transition) * Math.PI * 1.15;
     next.rotation.z = (1 - transition) * .42;
     const nextScale = next.userData.baseScale || 1;
