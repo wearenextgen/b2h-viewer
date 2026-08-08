@@ -2,6 +2,10 @@
 
 Live homepage preview: <https://wearenextgen.github.io/b2h-viewer/>
 
+Stable viewer URLs for the website developer are listed in [`VIEWER-LINKS.md`](VIEWER-LINKS.md).
+Keep those HTML paths unchanged; replace models behind their existing GLB filenames
+and update only the internal cache version when a model changes.
+
 The repository now includes the B2H launch homepage: a scroll-controlled product story in which each package starts on its front label, completes one full turn, then rolls out as the next product and native desktop/mobile environment enter. It is a homepage interaction, not a manually controlled 3D viewer.
 
 ## Homepage files

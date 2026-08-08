@@ -58,7 +58,7 @@ const loader = new GLTFLoader();
 loader.setDRACOLoader(draco);
 
 loader.load(
-  './whey-2kg.glb',
+  './whey-2kg.glb?v=20260808-stable2',
   (gltf) => {
     const model = gltf.scene;
     model.traverse((node) => {
