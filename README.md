@@ -16,6 +16,17 @@ The repository now includes the B2H launch homepage: a scroll-controlled product
 
 The individual viewer pages below remain available as model/label QA references.
 
+The homepage uses one restrained studio-light rig across every package, including
+the black performance range. On desktop the product stage is intentionally offset
+to the right of the copy; the mobile and tablet layouts recenter it automatically.
+
+## Omega-3
+
+- `omega3_final.glb` — exact B2H bottle body with a clean measured ribbed closure
+- `label.png` — runtime label wrap retained separately from the bottle geometry
+- `scripts/optimize_omega_bottle.py` — source-preserving web optimization
+- `scripts/repair_omega_neck.py` — deterministic replacement for the damaged scan neck/cap only
+
 ## Whey Protein 2kg
 
 - `whey-vanilla.html` — Vanilla viewer
@@ -26,5 +37,11 @@ The individual viewer pages below remain available as model/label QA references.
 ## Creatine Monohydrate 300g
 
 - `creatine.html` — interactive Creatine pouch viewer
-- `creatine-300g.glb` — self-contained pouch model with separate front/back artwork meshes
+- `creatine-300g.glb` — Hunyuan pouch with separate conforming packaging artwork mesh
 - `creatine-viewer.js` — responsive Three.js controls and lighting
+
+## Rebuild and QA scripts
+
+- `scripts/build_creatine_hunyuan.py` — imports the exact blank pouch and builds the independent packaging wrap
+- `scripts/inspect_glb.py` — geometry/material inventory
+- `scripts/render_glb_turnaround.py` — deterministic front/angle/back QA renders
